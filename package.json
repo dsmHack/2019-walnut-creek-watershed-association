@@ -1,21 +1,25 @@
 {
   "name": "2019-team-11",
-  "version": "1.0.0",
-  "description": "Walnut Creek",
-  "main": "index.js",
-  "scripts": {
-    "start": "webpack-dev-server index.js"
-  },
-  "repository": "https://github.com/dsmHack/2019-team-11.git",
-  "author": "Gujja, Reddy <NGujja@wrberkley.com>",
-  "license": "MIT",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
-    "webpack-cli": "^3.2.3"
+    "react-scripts": "2.1.5"
   },
-  "devDependencies": {
-    "webpack": "^4.29.5",
-    "webpack-dev-server": "^3.2.0"
-  }
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
