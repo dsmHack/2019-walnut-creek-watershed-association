@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import Header from './components/header';
-import AddressModal from './modals/address';
+import Header from './ui-core/components/header';
+import AddressModal from './ui-core/modals/address';
 
 class App extends Component {
   render() {
