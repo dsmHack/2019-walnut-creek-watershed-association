@@ -19,7 +19,7 @@ const theme = createMuiTheme({
     }
 });
 
-export class App extends Component {
+class App extends Component {
     render() {
         const triangleCoords = [
             {lat: 41.583943, lng: -93.629191},
@@ -65,6 +65,6 @@ export class App extends Component {
 }
 
 export default GoogleApiWrapper({
-    apiKey: ('AIzaSyBbQM-FxetsrzMqbJ2xzZbcbDUb9Au4nh4')
+    apiKey: (process.env.REACT_APP_GOOGLE_MAPS_API_KEY)
 })(App)
 

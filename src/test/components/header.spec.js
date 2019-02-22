@@ -16,6 +16,6 @@ describe("Header", () => {
     });
 
     it('should set title', () => {
-        expect(wrapper.text()).toBe(title);
+        expect(wrapper.find('label').text()).toBe(title);
     });
 })
