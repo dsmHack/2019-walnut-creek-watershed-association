@@ -74,7 +74,7 @@ async function getSampleResults(huc, characteristicName) {
     .then(function (response) {
         // handle success
         console.log(response);
-        return convert.xml2json(response, {compact: true, spaces: 4});
+        return response;
     })
     .catch(function (error) {
         // handle error
@@ -87,4 +87,4 @@ async function getHuc(lat, long) {
 
 }
 
-module.exports = {getEcoliData, getFibiData, getEpaStations, getSampleResults, getHuc};
+export default {getEcoliData, getFibiData, getEpaStations, getSampleResults, getHuc};
