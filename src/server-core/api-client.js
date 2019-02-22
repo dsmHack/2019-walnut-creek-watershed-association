@@ -1,6 +1,6 @@
 import ajax from 'ajax'
 
-async function getEcoliData(huc) {
+export default async function getEcoliData(huc) {
     var url = "https://www.waterqualitydata.us/data/Result/search?"
     var query = "startDateLo=01-01-2017&huc=" + huc + "&mimeType=xml&characteristicName=Escherichia%20coli";
     ajax({
