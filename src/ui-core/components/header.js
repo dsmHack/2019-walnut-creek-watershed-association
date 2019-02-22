@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default Header = (props) => {
+const Header = (props) => {
     const {title} = props;
     return(
         <div>
-            <Text>{title}</Text>
+            <label>{title}</label>
         </div>
     );
 }
@@ -13,3 +13,5 @@ export default Header = (props) => {
 Header.propTypes = {
     title: PropTypes.string.isRequired
 }
+
+export default Header;
