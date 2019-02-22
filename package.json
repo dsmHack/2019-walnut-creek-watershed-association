@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^3.9.2",
     "ajax": "0.0.4",
+    "axios": "^0.18.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.9.1",
     "google-maps-react": "^2.0.2",
@@ -12,7 +13,8 @@
     "react-dom": "^16.8.3",
     "react-scripts": "2.1.5",
     "react-test-renderer": "^16.8.3",
-    "typeface-roboto": "0.0.54"
+    "typeface-roboto": "0.0.54",
+    "xml-js": "^1.6.11"
   },
   "scripts": {
     "start": "react-scripts start",
