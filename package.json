@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "ajax": "0.0.4",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.9.1",
     "react": "^16.8.3",
