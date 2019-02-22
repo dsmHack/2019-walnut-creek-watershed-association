@@ -18,6 +18,7 @@ const theme = createMuiTheme({
         useNextVariants: true
     }
 });
+const API_KEY = process.env.REACT_APP_MAP_API_KEY;
 
 export class App extends Component {
     render() {
@@ -63,8 +64,7 @@ export class App extends Component {
         );
     }
 }
-
 export default GoogleApiWrapper({
-    apiKey: ('AIzaSyBbQM-FxetsrzMqbJ2xzZbcbDUb9Au4nh4')
+    apiKey: (API_KEY)
 })(App)
 
