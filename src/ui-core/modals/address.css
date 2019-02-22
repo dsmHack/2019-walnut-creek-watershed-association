@@ -2,5 +2,15 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-45%, -50%);
+    width: 40%;
+}
+
+.title {
+
+}
+
+.nextButton {
+    width: 25%;
+    justify-content: center;
 }
