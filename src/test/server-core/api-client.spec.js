@@ -32,12 +32,4 @@ describe("ApiClient", () => {
             expect(data).not.toBe("error");
         })
     })
-
-    it('should parse xml result', ()=>{
-        console.log("Test string from test file");
-        return api.getEcoliData(huc12).then(function (data) {
-            expect(data).not.toBe("error");
-        })
-    })
-
 })
