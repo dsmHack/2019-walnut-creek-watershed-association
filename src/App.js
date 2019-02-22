@@ -19,7 +19,7 @@ const theme = createMuiTheme({
     }
 });
 
-export class App extends Component {
+class App extends Component {
     render() {
         const triangleCoords = [
             {lat: 41.583943, lng: -93.629191},
