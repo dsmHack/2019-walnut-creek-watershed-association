@@ -1,20 +1,50 @@
 import convert from 'xml-js';
 import axios from 'axios';
 
+// const point = {
+//     name = "",
+//     lat = 0.0,
+//     long = 0.0,
+//     datas = []
+// }
+
+// const data = {
+//     name = "",
+//     unit = "",
+//     value = 0.0,
+//     date = "",
+
+// }
+
+
+
 async function getEcoliData(huc) {
-    var url = "https://www.waterqualitydata.us/data/Result/search?"
-    var query = "startDateLo=01-01-2017&huc=" + huc + "&mimeType=xml&characteristicName=Escherichia%20coli";
-    axios.get(url + query)
-    .then(function (response) {
-        // handle success
-        console.log(response);
-        return convert.xml2json(response, {compact: true, spaces: 4});
-    })
-    .catch(function (error) {
-        // handle error
-        console.log(error);
-        return "She get wet";
-    });
+    let charName = "Escherichia%20coli";
+    let result = await getSampleResults(huc, charName);
+    let locations = await getEpaStations(huc, charName);
+    
+    console.log("result data " + typeof result);
+
+    var parser = new DOMParser();
+    var resultParsed = parser.parseFromString(result, "text/xml");
+    var activities = resultParsed.getElementsByTagName("Activity");
+    
+    console.log("Trying to get activities "+activities.length);
+    for(var activity of activities){
+        console.log("Testing get elements from xml"+activity.getElementsByTagName("MonitoringLocationIdentifier").value)
+        //activity.getElementsByTagName("ActivityStartDate").value
+        //activity.getElementsByTagName("ResultMeasureValue").value
+        //activity.getElementsByTagName("MeasureUnitCode").value
+        //activity.getElementsByTagName("MonitoringLocationIdentifier").value
+    }
+}
+
+async function getNitrateData(huc) {
+    return await getSampleResults(huc, "Nitrate");
+}
+
+function mapXmlToModel(xml, type) {
+    
 }
 
 async function getFibiData(huc) {
@@ -87,4 +117,4 @@ async function getHuc(lat, long) {
 
 }
 
-export default {getEcoliData, getFibiData, getEpaStations, getSampleResults, getHuc};
+export default {getEcoliData, getEcoliData, getFibiData, getEpaStations, getSampleResults, getHuc};
