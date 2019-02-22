@@ -35,7 +35,7 @@ class App extends Component {
 
         return (
             <MuiThemeProvider theme={theme}>
-                <div className="App" style={{ height: '100vh', width: '100%' }}>
+                <div className="App">
                     <Header title="Find Water Quality Near Me" />
 
                     <Map
@@ -52,7 +52,34 @@ class App extends Component {
                           fillColor="#0000FF"
                           fillOpacity={0.35} />
 
-                        <Marker position={{lat: 41.583339, lng: -93.628025}}/>
+                        <Marker position={{lat: 41.5839, lng: -93.6283}} />
+
+                        <Marker
+                          position={{lat: 41.5825, lng: -93.629}}
+                          icon={{
+                              url: "/images/low.png",
+                              anchor: new window.google.maps.Point(24,24),
+                              scaledSize: new window.google.maps.Size(48,48)
+                          }}
+                        />
+
+                        <Marker
+                          position={{lat: 41.5825, lng: -93.628025}}
+                          icon={{
+                              url: "/images/med.png",
+                              anchor: new window.google.maps.Point(24,24),
+                              scaledSize: new window.google.maps.Size(48,48)
+                          }}
+                        />
+
+                        <Marker
+                          position={{lat: 41.5825, lng: -93.627}}
+                          icon={{
+                              url: "/images/high.png",
+                              anchor: new window.google.maps.Point(24,24),
+                              scaledSize: new window.google.maps.Size(48,48)
+                          }}
+                        />
 
 
                     </Map>
