@@ -17,4 +17,4 @@ async function getHucBorder(hucid, hucType) {
         });
 }
 
-export default {getHucBorder};
+export default getHucBorder;

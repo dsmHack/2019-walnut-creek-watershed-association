@@ -21,6 +21,7 @@ async function getNitrateData(huc) {
 
 async function baseEpaQuery(huc, charName) {
     let sampleResult = await getSampleResults(huc, charName);
+    console.log(sampleResult);
     let dataSamples = getValueDataFromXml(sampleResult.data)
 
     let locationResult = await getEpaStations(huc, charName);
@@ -75,7 +76,7 @@ async function convertEsriGeometryPolygonToLatLngList(stuff) {
     dataCordsQueryParam = dataCordsQueryParam.substring(0, dataCordsQueryParam.length - 1); // remove final semicolon
 
     let url = `http://epsg.io/trans?data=${dataCordsQueryParam}&s_srs=3857&t_srs=4326`
-    return await axios.get(url);
+    return await axios.get(url).catch(error => {console.log(error)});
 }
 
 function getLocationDataFromXml(xml) {
@@ -161,7 +162,9 @@ async function fetchFibiDataBySiteId(siteId) {
 
         fibiSite.datas.push(fibiData);
         return fibiSite;
-    })
+    }).catch(error => {
+        console.log(error);
+    });
 }
 
 async function getEpaStations(huc, characteristicName) {
@@ -180,16 +183,12 @@ async function getEpaStations(huc, characteristicName) {
 }
 
 async function getSampleResults(huc, characteristicName) {
-    let startDateLo = dateTwoMonthsAgo();
-    let url = SAMPLE_RESULTS_URL + `startDateLo=${startDateLo}&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
-    console.log(url);
-    return axios.get(url);
-}
-
-function dateTwoMonthsAgo() {
-    let startDateLo = new Date();
-    startDateLo.setMonth(startDateLo.getMonth() - 2);
-    return startDateLo.toLocaleDateString().replace(/\//g, '-')
+    var url = SAMPLE_RESULTS_URL;
+    // TODO: externalize startDateLo from query -> subtract 2 months from today
+    var query = `startDateLo=01-01-2017&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
+    return axios.get(url + query).then().catch(error => {
+        console.log(error);
+    });
 }
 
 async function getHuc(lat, long) {}

@@ -13,13 +13,14 @@ import {
 import "./address.css";
 
 class AddressModal extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             address: ""
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleOnClick = this.handleOnClick.bind(this);
     }
 
     handleChange({ target }) {
@@ -28,6 +29,9 @@ class AddressModal extends Component {
         });
     }
 
+    async handleOnClick(){
+        await this.props.handleSubmit(this.state.address);
+    }
     render() {
         return (
             <Card className="modal">
@@ -47,7 +51,7 @@ class AddressModal extends Component {
                         size="medium"
                         variant="contained"
                         color="primary"
-                        onClick={this.props.handleSubmit}
+                        onClick={this.handleOnClick}
                     >
                         NEXT
                     </Button>
