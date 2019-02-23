@@ -37,13 +37,6 @@ class App extends Component {
     }
     
     render() {
-        const triangleCoords = [
-            {lat: 41.583943, lng: -93.629191},
-            {lat: 41.584208, lng: -93.627939},
-            {lat: 41.583247, lng: -93.627649},
-            {lat: 41.582972, lng: -93.628821},
-        ];
-
         const style = {
             width: '100%',
             height: '100%'

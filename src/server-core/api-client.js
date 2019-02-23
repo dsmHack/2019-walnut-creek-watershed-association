@@ -39,10 +39,10 @@ async function getNitrateData(huc) {
     let pointSamples = getLocationDataFromXml(locationResult.data)
 
     for (let key of pointSamples.keys()) {
-	let data = dataSamples.get(key);
-	if (data !== undefined) {
-	    pointSamples.get(key).datas.push(data);
-	}
+        let data = dataSamples.get(key);
+        if (data !== undefined) {
+            pointSamples.get(key).datas.push(data);
+        }
     }
 
     return pointSamples;
@@ -53,18 +53,17 @@ function getValueDataFromXml(xml) {
     let activities = parsedResult.getElementsByTagName("Activity");
     let samples = new Map();
     for (let activity of activities) {
-	let sample = new Data();
-
+	    let sample = new Data();
         const getTagValue = (qualifiedName) => {
             let tag = activity.getElementsByTagName(qualifiedName)[0];
             return (tag === undefined) ? null :tag.childNodes[0].nodeValue;
         };
 
         sample.name = getTagValue("CharacteristicName");
-	sample.locId = getTagValue("MonitoringLocationIdentifier");
+	    sample.locId = getTagValue("MonitoringLocationIdentifier");
         sample.date = getTagValue("ActivityStartDate");
         sample.value = getTagValue("ResultMeasureValue");
-	sample.unit = getTagValue("MeasureUnitCode");
+	    sample.unit = getTagValue("MeasureUnitCode");
 
         let existing = samples[sample.locId];
         if (existing == null || (Date.parse(sample.date) > Date.parse(existing.date))) {
@@ -75,19 +74,16 @@ function getValueDataFromXml(xml) {
     return samples;
 }
 
-async function convertEsriGeometryPolygonToLatLngList(esriGeometry) {
-    let latLngList = [];
+async function convertEsriGeometryPolygonToLatLngList(stuff) {
+    let esriGeometry = stuff.data
+    var dataCordsQueryParam = '';
     if (esriGeometry != null && esriGeometry.results != null && esriGeometry.results.length > 0
         && esriGeometry.results[0].geometryType != null && esriGeometry.results[0].geometryType === ("esriGeometryPolygon")) {
         esriGeometry.results[0].geometry.rings[0].forEach((lngLat) => {
-            latLngList.push({lat: lngLat[1], lng: lngLat[0]});
+            dataCordsQueryParam += lngLat[0] + ',' + lngLat[1] + ';'
         });
     }
 
-    var dataCordsQueryParam = '';
-    for (var cords of latLngList) {
-        dataCordsQueryParam += cords.lng + ',' + cords.lat + ';'
-    }
     dataCordsQueryParam = dataCordsQueryParam.substring(0, dataCordsQueryParam.length - 1); // remove final semicolon
 
     let url = `http://epsg.io/trans?data=${dataCordsQueryParam}&s_srs=3857&t_srs=4326`
@@ -99,15 +95,14 @@ function getLocationDataFromXml(xml) {
     let locations = parsedResult.getElementsByTagName("MonitoringLocation");
     let samples = new Map();
     for (let location of locations) {
-	let sample = new Point()
-
+	    let sample = new Point()
         const getTagValue = (qualifiedName) => {
             let tag = location.getElementsByTagName(qualifiedName)[0];
             return (tag === undefined) ? null :tag.childNodes[0].nodeValue;
         };
 
         sample.locId = getTagValue("MonitoringLocationIdentifier");
-	sample.name = getTagValue("MonitoringLocationName");
+	    sample.name = getTagValue("MonitoringLocationName");
         sample.lat = getTagValue("LatitudeMeasure");
         sample.long = getTagValue("LongitudeMeasure");
 
