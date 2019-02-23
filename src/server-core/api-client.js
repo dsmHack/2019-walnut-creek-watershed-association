@@ -2,37 +2,65 @@ import convert from "xml-js";
 import axios from "axios";
 // axios.defaults.timeout = 1000000000;
 
+class point {
+    constructor(){
+	this.locId = "";
+	this.name = "";
+	this.lat = 0.0;
+	this.long = 0.0;
+	this.datas = [];
+    }
+}
+
+class Data {
+    constructor(){
+	this.name = "";
+	this.unit = "";
+	this.value = 0.0;
+	this.date = "";
+	this.locId = "";
+    }
+}
+
+
 async function getEcoliData(huc) {
     let charName = "Escherichia%20coli";
     let result = await getSampleResults(huc, charName);
-    // let locations = await getEpaStations(huc, charName);
-
-    let parsedResult = new DOMParser().parseFromString(result.data, "text/xml");
-    let activities = parsedResult.getElementsByTagName("Activity");
-
-    let samples = new Map();
-        for (let activity of activities) {
-            let sample = {};
-            const getTagValue = (qualifiedName) => {
-                let tag = activity.getElementsByTagName(qualifiedName)[0];
-                return (tag === undefined) ? null :tag.childNodes[0].nodeValue;
-            };
-
-            sample.name = getTagValue("MonitoringLocationIdentifier");
-            sample.date = getTagValue("ActivityStartDate");
-            sample.value = getTagValue("ResultMeasureValue");
-
-            let existing = samples[sample.name];
-            if (existing == null || (Date.parse(sample.date) > Date.parse(existing.date))) {
-                samples.set(sample.name, sample);
-            }
-    }
+    let locations = await getEpaStations(huc, charName);
+    let samples = GetDataFromXml(result.data)
 
     return samples;
 }
 
 async function getNitrateData(huc) {
     return await getSampleResults(huc, "Nitrate");
+}
+
+function getValueDataFromXml(xml) {
+    let parsedResult = new DOMParser().parseFromString(xml, "text/xml");
+    let activities = parsedResult.getElementsByTagName("Activity");
+    let samples = new Map();
+    for (let activity of activities) {
+	let sample = new data()
+	
+        const getTagValue = (qualifiedName) => {
+            let tag = activity.getElementsByTagName(qualifiedName)[0];
+            return (tag === undefined) ? null :tag.childNodes[0].nodeValue;
+        };
+
+        sample.name = getTagValue("CharacteristicName");
+	sample.locId = getTagValue("MonitoringLocationIdentifier");
+        sample.date = getTagValue("ActivityStartDate");
+        sample.value = getTagValue("ResultMeasureValue");
+	sample.unit = getTagValue("MeasureUnitCode");
+
+        let existing = samples[sample.locId];
+        if (existing == null || (Date.parse(sample.date) > Date.parse(existing.date))) {
+            samples.set(sample.locId, sample);
+        }
+    }
+
+    return samples;
 }
 
 async function getFibiData(huc) {
