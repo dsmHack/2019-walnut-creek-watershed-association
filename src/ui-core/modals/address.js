@@ -7,6 +7,11 @@ import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
 import API from "../../server-core/main-service";
+import {
+    ADDRESS_MODAL_TITLE,
+    ADDRESS_MODAL_INPUT_PLACEHOLDER
+} from "../constants/address";
+import { SWIMMING_LAYER } from "../../constants_shared/layers";
 import "./address.css";
 
 class AddressModal extends Component {
@@ -21,20 +26,20 @@ class AddressModal extends Component {
 
     handleChange({ target }) {
         this.setState({
-            "address": target.value
+            address: target.value
         });
     }
 
     render() {
         return (
             <Card className="modal">
-                <CardHeader className="title" title="TYPE YOUR ADDRESS" />
+                <CardHeader className="title" title={ADDRESS_MODAL_TITLE} />
                 <CardContent>
                     <TextField
                         className="address"
                         type="text"
                         value={this.state.address}
-                        placeholder="Enter Address Here.."
+                        placeholder={ADDRESS_MODAL_INPUT_PLACEHOLDER}
                         onChange={this.handleChange}
                     />
                 </CardContent>
@@ -44,7 +49,9 @@ class AddressModal extends Component {
                         size="medium"
                         variant="contained"
                         color="primary"
-                        onClick={() => API.getData(this.state.address, "swimming")}
+                        onClick={() =>
+                            API.getData(this.state.address, SWIMMING_LAYER)
+                        }
                     >
                         NEXT
                     </Button>
