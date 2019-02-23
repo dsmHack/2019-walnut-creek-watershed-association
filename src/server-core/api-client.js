@@ -183,11 +183,7 @@ async function fetchFibiDataBySiteId(siteId) {
 async function getEpaStations(huc, characteristicName) {
     var url = EPA_URL;
     // TODO: externalize startDateLo from query
-    var query =
-        "startDateLo=01-01-2017&huc=" +
-        huc +
-        "&mimeType=xml&characteristicName=" +
-        characteristicName;
+    var query = `startDateLo=01-01-2017&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
     return axios
         .get(url + query)
         .then(function(response) {
