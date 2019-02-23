@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import {Map, Marker, GoogleApiWrapper, Polygon} from 'google-maps-react';
 import "./App.css";
+import ActivityTypeRadio from "./ui-core/components/radio-activity-type";
 import Header from "./ui-core/components/header";
 import AddressModal from "./ui-core/modals/address";
 import {HEADER_TITLE} from "./ui-core/constants/header";
 
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import blue from "@material-ui/core/colors/blue";
+
 
 const theme = createMuiTheme({
     palette: {
@@ -51,7 +53,7 @@ class App extends Component {
             <MuiThemeProvider theme={theme}>
                 <div className="App">
                     <Header title={HEADER_TITLE} />
-
+                    <ActivityTypeRadio/>
                     <Map
                       google={this.props.google}
                       style={style}
