@@ -12,25 +12,14 @@ import Point from "./models/point";
 // axios.defaults.timeout = 1000000000;
 
 async function getEcoliData(huc) {
-    let charName = "Escherichia%20coli";
-    let sampleResult = await getSampleResults(huc, charName);
-    let dataSamples = getValueDataFromXml(sampleResult.data)
-
-    let locationResult = await getEpaStations(huc, charName);
-    let pointSamples = getLocationDataFromXml(locationResult.data)
-
-    for (let key of pointSamples.keys()) {
-        let data = dataSamples.get(key);
-        if (data !== undefined) {
-            pointSamples.get(key).datas.push(data);
-        }
-    }
-
-    return pointSamples;
+    return baseEpaQuery(huc, "Escherichia%20coli");
 }
 
 async function getNitrateData(huc) {
-    let charName = "Nitrate";
+    return baseEpaQuery(huc, "Nitrate");
+}
+
+async function baseEpaQuery(huc, charName) {
     let sampleResult = await getSampleResults(huc, charName);
     let dataSamples = getValueDataFromXml(sampleResult.data)
 
@@ -176,11 +165,10 @@ async function fetchFibiDataBySiteId(siteId) {
 }
 
 async function getEpaStations(huc, characteristicName) {
-    var url = EPA_URL;
-    // TODO: externalize startDateLo from query
-    var query = `startDateLo=01-01-2017&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
+    let startDateLo = dateTwoMonthsAgo();
+    let query = EPA_URL + `startDateLo=${startDateLo}&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
     return axios
-        .get(url + query)
+        .get(query)
         .then(function(response) {
             // handle success
             return response;
@@ -192,11 +180,16 @@ async function getEpaStations(huc, characteristicName) {
 }
 
 async function getSampleResults(huc, characteristicName) {
-    var url = SAMPLE_RESULTS_URL;
-    // TODO: externalize startDateLo from query -> subtract 2 months from today
-    var query = `
-        "startDateLo=01-01-2017&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
-    return axios.get(url + query);
+    let startDateLo = dateTwoMonthsAgo();
+    let url = SAMPLE_RESULTS_URL + `startDateLo=${startDateLo}&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
+    console.log(url);
+    return axios.get(url);
+}
+
+function dateTwoMonthsAgo() {
+    let startDateLo = new Date();
+    startDateLo.setMonth(startDateLo.getMonth() - 2);
+    return startDateLo.toLocaleDateString().replace(/\//g, '-')
 }
 
 async function getHuc(lat, long) {}
