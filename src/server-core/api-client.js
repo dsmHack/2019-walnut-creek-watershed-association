@@ -18,10 +18,10 @@ async function getEcoliData(huc) {
 
     //TODO: Need to combine the sample data to the locations
     for (let key of pointSamples.keys()) {
-	let data = dataSamples.get(key);
-	if (data !== undefined) {
-	    pointSamples.get(key).datas.push(data);
-	}
+        let data = dataSamples.get(key);
+        if (data !== undefined) {
+            pointSamples.get(key).datas.push(data);
+        }
     }
 
     return pointSamples;
@@ -83,10 +83,6 @@ async function convertEsriGeometryPolygonToLatLngList() {
 
     let url = `http://epsg.io/trans?data=${dataCordsQueryParam}&s_srs=3857&t_srs=4326`
     return await axios.get(url);
-}
-
-async function getNitrateData(huc) {
-    return await getSampleResults(huc, "Nitrate");
 }
 
 function getLocationDataFromXml(xml) {
