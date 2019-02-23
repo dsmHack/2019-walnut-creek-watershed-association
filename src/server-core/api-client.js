@@ -10,7 +10,7 @@ import {
 } from "./constants/urls";
 // axios.defaults.timeout = 1000000000;
 
-class point {
+class Point {
     constructor(){
 	this.locId = "";
 	this.name = "";
@@ -33,34 +33,21 @@ class Data {
 
 async function getEcoliData(huc) {
     let charName = "Escherichia%20coli";
-    let result = await getSampleResults(huc, charName);
-    // let locations = await getEpaStations(huc, charName);
+    let sampleResult = await getSampleResults(huc, charName);
+    let dataSamples = getValueDataFromXml(sampleResult.data)
+    
+    let locationResult = await getEpaStations(huc, charName);
+    let pointSamples = getLocationDataFromXml(locationResult.data)
 
-    let parsedResult = new DOMParser().parseFromString(result.data, "text/xml");
-    let activities = parsedResult.getElementsByTagName("Activity");
-
-    let samples = new Map();
-    for (let activity of activities) {
-        let sample = {};
-        const getTagValue = qualifiedName => {
-            let tag = activity.getElementsByTagName(qualifiedName)[0];
-            return tag === undefined ? null : tag.childNodes[0].nodeValue;
-        };
-
-        sample.name = getTagValue("MonitoringLocationIdentifier");
-        sample.date = getTagValue("ActivityStartDate");
-        sample.value = getTagValue("ResultMeasureValue");
-
-        let existing = samples[sample.name];
-        if (
-            existing == null ||
-            Date.parse(sample.date) > Date.parse(existing.date)
-        ) {
-            samples.set(sample.name, sample);
-        }
+    //TODO: Need to combine the sample data to the locations
+    for (let key of pointSamples.keys()) {
+	let data = dataSamples.get(key);
+	if (data !== undefined) {
+	    pointSamples.get(key).datas.push(data);
+	}
     }
-
-    return samples;
+    
+    return pointSamples;
 }
 
 
@@ -91,6 +78,32 @@ function getValueDataFromXml(xml) {
         sample.value = getTagValue("ResultMeasureValue");
 	sample.unit = getTagValue("MeasureUnitCode");
 
+        let existing = samples[sample.locId];
+        if (existing == null || (Date.parse(sample.date) > Date.parse(existing.date))) {
+            samples.set(sample.locId, sample);
+        }
+    }
+
+    return samples;
+}
+
+function getLocationDataFromXml(xml) {
+    let parsedResult = new DOMParser().parseFromString(xml, "text/xml");
+    let locations = parsedResult.getElementsByTagName("MonitoringLocation");
+    let samples = new Map();
+    for (let location of locations) {
+	let sample = new Point()
+	
+        const getTagValue = (qualifiedName) => {
+            let tag = location.getElementsByTagName(qualifiedName)[0];
+            return (tag === undefined) ? null :tag.childNodes[0].nodeValue;
+        };
+
+        sample.locId = getTagValue("MonitoringLocationIdentifier");
+	sample.name = getTagValue("MonitoringLocationName");
+        sample.lat = getTagValue("LatitudeMeasure");
+        sample.long = getTagValue("LongitudeMeasure");
+	
         let existing = samples[sample.locId];
         if (existing == null || (Date.parse(sample.date) > Date.parse(existing.date))) {
             samples.set(sample.locId, sample);
@@ -170,17 +183,19 @@ async function fetchFibiDataBySiteId(siteId) {
 async function getEpaStations(huc, characteristicName) {
     var url = EPA_URL;
     // TODO: externalize startDateLo from query
-    var query = `startDateLo=01-01-2017&huc=${huc}&mimeType=xml&characteristicName=Nitrate${characteristicName}`;
-    axios
+    var query =
+        "startDateLo=01-01-2017&huc=" +
+        huc +
+        "&mimeType=xml&characteristicName=" +
+        characteristicName;
+    return axios
         .get(url + query)
         .then(function(response) {
             // handle success
-            console.log(response);
-            return convert.xml2json(response, { compact: true, spaces: 4 });
+            return response;
         })
         .catch(function(error) {
             // handle error
-            console.log(error);
             return ERROR_SHE_GET_WET;
         });
 }
