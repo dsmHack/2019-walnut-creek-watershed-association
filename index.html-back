@@ -1,0 +1,12 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Routing Page!</title>
+  </head>
+  <script src="./src/index.js"></script>
+  <body>
+  
+    <link rel="html" type="text/html" href="./build/index.html">
+    
+  </body>
+</html>
