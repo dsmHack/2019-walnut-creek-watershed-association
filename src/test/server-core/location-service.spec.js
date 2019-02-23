@@ -4,6 +4,7 @@ describe("LocationService", () => {
     let addr;
 
     beforeEach(() => {
+        jest.setTimeout(60000);
         addr = "900 Mulberry St, Des Moines, IA 50309";
     });
 
