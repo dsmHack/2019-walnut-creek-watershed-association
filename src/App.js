@@ -32,18 +32,9 @@ class App extends Component {
         this.setState({
             coordinatesList
         });
-        // this.setState({
-        //     coordinatesList: coordinatesList
-        // })
     }
 
     render() {
-        const triangleCoords = [
-            {lat: 41.583943, lng: -93.629191},
-            {lat: 41.584208, lng: -93.627939},
-            {lat: 41.583247, lng: -93.627649},
-            {lat: 41.582972, lng: -93.628821},
-        ];
 
         const style = {
             width: '100%',
@@ -115,6 +106,6 @@ class App extends Component {
 }
 
 export default GoogleApiWrapper({
-    apiKey: ('AIzaSyDE4Rtouj6STI2E15qtuwH_VAI2cjS1iFs')
+    apiKey: ('AIzaSyBbQM-FxetsrzMqbJ2xzZbcbDUb9Au4nh4')
 })(App)
 

@@ -33,23 +33,6 @@ class AddressModal extends Component {
             console.log("Sample Results: " + results);
         };
 
-        let hucBorderCallback = (hucBorder) => {
-            console.log("hucBorderCallback " + hucBorder);
-
-            BorderData.getHucBorder(hucBorder, "huc_12").then((result) => {
-                console.log("Border " + result);
-                let latlngs = Utils.convertEsriGeometryPolygonToLatLngList(result);
-                latlngs = [
-                    {lat: 41.583943, lng: -93.629191},
-                    {lat: 41.584208, lng: -93.627939},
-                    {lat: 41.583247, lng: -93.627649},
-                    {lat: 41.582972, lng: -93.628821},
-                ];
-                this.props.setCoordinatesList(latlngs);
-                console.log(latlngs);
-            })
-        };
-
         return (
             <Card className="modal">
                 <CardHeader className="title" title="TYPE YOUR ADDRESS" />
@@ -77,9 +60,15 @@ class AddressModal extends Component {
                             // let results = await API.getData(hucId, "swimming");
                             // sampleResultCallback(results);
 
-                            let hucBorder = await BorderData.getHucBorder(hucId);
-                            hucBorderCallback(hucBorder)
+                            let hucBorder = await BorderData.getHucBorder(hucId, "huc_12");
+                            console.log(hucBorder);
+
+                            let latlngs = Utils.convertEsriGeometryPolygonToLatLngList(hucBorder);
+
+                            this.props.setCoordinatesList(latlngs);
+                            console.log(latlngs);
                         }}
+
                     >
                         NEXT
                     </Button>
