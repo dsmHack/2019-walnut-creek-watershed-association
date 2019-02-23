@@ -6,14 +6,10 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
-import ApiClient from "../../server-core/api-client";
-import Location from "../../server-core/location-service";
-import BorderData from "../../server-core/border-data-api";
 import {
     ADDRESS_MODAL_TITLE,
     ADDRESS_MODAL_INPUT_PLACEHOLDER
 } from "../constants/address";
-import { SWIMMING_LAYER } from "../../constants_shared/layers";
 import "./address.css";
 
 class AddressModal extends Component {
@@ -33,10 +29,6 @@ class AddressModal extends Component {
     }
 
     render() {
-        let sampleResultCallback = (results) => {
-            console.log("Sample Results: " + results);
-        };
-
         return (
             <Card className="modal">
                 <CardHeader className="title" title={ADDRESS_MODAL_TITLE} />
@@ -55,26 +47,7 @@ class AddressModal extends Component {
                         size="medium"
                         variant="contained"
                         color="primary"
-                        onClick={async () => {
-                            let hucId = await Location.getHucFromAddress(this.state.address);
-                            console.log("hucId: " + hucId);
-
-                            // TODO hook up call and callback for ecoli data
-                            // let results = API.getData(this.state.address, SWIMMING_LAYER)
-                            // sampleResultCallback(results);
-
-                            let hucBorder = await BorderData.getHucBorder(hucId, "huc_12");
-
-                            let latlngs = (await ApiClient.convertEsriGeometryPolygonToLatLngList(hucBorder)).data;
-                            let coords = [];
-                            for (var latlng of latlngs) {
-                                let loc = {};
-                                loc.lat = Number(latlng.y);
-                                loc.lng = Number(latlng.x);
-                                coords.push(loc);
-                            }
-                            this.props.setCoordinatesList(coords);
-                        }}
+                        onClick={this.props.handleSubmit}
                     >
                         NEXT
                     </Button>
