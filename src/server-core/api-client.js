@@ -165,11 +165,10 @@ async function fetchFibiDataBySiteId(siteId) {
 }
 
 async function getEpaStations(huc, characteristicName) {
-    var url = EPA_URL;
-    // TODO: externalize startDateLo from query
-    var query = `startDateLo=01-01-2017&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
+    let startDateLo = dateTwoMonthsAgo();
+    let query = EPA_URL + `startDateLo=${startDateLo}&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
     return axios
-        .get(url + query)
+        .get(query)
         .then(function(response) {
             // handle success
             return response;
@@ -181,11 +180,16 @@ async function getEpaStations(huc, characteristicName) {
 }
 
 async function getSampleResults(huc, characteristicName) {
-    var url = SAMPLE_RESULTS_URL;
-    // TODO: externalize startDateLo from query -> subtract 2 months from today
-    var query = `
-        "startDateLo=01-01-2017&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
-    return axios.get(url + query);
+    let startDateLo = dateTwoMonthsAgo();
+    let url = SAMPLE_RESULTS_URL + `startDateLo=${startDateLo}&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
+    console.log(url);
+    return axios.get(url);
+}
+
+function dateTwoMonthsAgo() {
+    let startDateLo = new Date();
+    startDateLo.setMonth(startDateLo.getMonth() - 2);
+    return startDateLo;
 }
 
 async function getHuc(lat, long) {}
