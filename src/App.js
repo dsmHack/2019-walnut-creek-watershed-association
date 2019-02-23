@@ -20,6 +20,23 @@ const theme = createMuiTheme({
 });
 
 class App extends Component {
+
+    constructor() {
+        super();
+        this.state = {
+            coordinatesList: []
+        };
+    }
+
+    setCoordinatesList(coordinatesList) {
+        this.setState({
+            coordinatesList
+        });
+        // this.setState({
+        //     coordinatesList: coordinatesList
+        // })
+    }
+
     render() {
         const triangleCoords = [
             {lat: 41.583943, lng: -93.629191},
@@ -45,7 +62,7 @@ class App extends Component {
                       initialCenter={{lat: 41.583586, lng: -93.628419}}>
 
                         <Polygon
-                          paths={triangleCoords}
+                          paths={this.state.coordinatesList}
                           strokeColor="#0000FF"
                           strokeOpacity={0.8}
                           strokeWeight={2}
@@ -84,7 +101,13 @@ class App extends Component {
 
                     </Map>
 
-                    <AddressModal handleClose={() => {}} show={true} />
+                    <AddressModal
+                      handleClose={() => {}}
+                      show={true}
+                      setCoordinatesList={(coordinatesList) => {
+                          this.setCoordinatesList(coordinatesList)
+                      }}
+                    />
                 </div>
             </MuiThemeProvider>
         );
