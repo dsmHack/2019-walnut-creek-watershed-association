@@ -32,9 +32,46 @@ Builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
 The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+
+`PRODUCTION IMPORTANT: npm run build will move the build contents into a docs folder which the gh-pages hosting is configured to point at. Just push the updated contents of the docs folder into GitHub and the newest build will serve!`
+
+Now Your App is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+<h2> GitHub Page Hosting </h2>
+
+```
+Directly from Slack:
+
+howkj1 [12:15 AM]
+@channel we have static hosting up and running on the master branch (atm, but can be changed later) for team 11 github. Any typical static site content can be hosted this way. Right now we've got a boiler-plate bootstrap theme using a jekyll template (@howkj1) is extremely familiar with. We can leverage this as a landing page / business card / home page / etc. if desired. The actual api GIS app can live on its own sub-page, be embedded on the page, or whatever.
+
+live site:
+https://dsmhack.github.io/2019-team-11/
+(url can be changed later)
+
+for code-base see:
+https://github.com/dsmHack/2019-team-11
+
+I've setup a bunch of single-page-like sites with this setup.
+If we need more flexibility, check with @dragon788 on possible wordpress workflows if worse comes to wear.
+
+for more information, check out :
+https://pages.github.com/
+https://github.com/y7kim/agency-jekyll-theme
+https://jekyllrb.com/
+https://jekyllthemes.io/free
+
+Working sites with the jekyll agency theme:
+http://ottumwa1stchurch.com/
+http://applecreekiowa.com/
+
+Basically think of github's gh-pages feature as free static hosting... like a basic http server.
+We use the term "static site" loosely here since modern javascript can do dynamic calls (React, anybody?) and stuffs. So, so long as we don't need server-side processing, we don't need to bother with hosting.
+
+If nothing else, we can use this feature to host developer documentation for the project.  README.md / wiki
+```
 
 ### `npm run eject`
 
