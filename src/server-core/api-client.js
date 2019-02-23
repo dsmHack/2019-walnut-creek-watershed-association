@@ -63,8 +63,14 @@ async function getEcoliData(huc) {
     return samples;
 }
 
+
 async function getNitrateData(huc) {
-    return await getSampleResults(huc, "Nitrate");
+    let charName = "Nitrate";
+    let result =  await getSampleResults(huc, charName);
+    let locations = await getEpaStations(huc, charName);
+    let samples = GetDataFromXml(result.data)
+
+    return samples;
 }
 
 function getValueDataFromXml(xml) {
