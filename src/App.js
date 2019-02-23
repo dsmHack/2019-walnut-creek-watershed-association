@@ -13,8 +13,6 @@ import API from "./server-core/api-client";
 
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import blue from "@material-ui/core/colors/blue";
-import { async } from "q";
-
 
 const theme = createMuiTheme({
     palette: {
@@ -39,12 +37,13 @@ class App extends Component {
             fibiData: [],
             selectedLayer: DRINKING_LAYER,
         };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.setCoordinatesList = this.setCoordinatesList.bind(this);
     }
 
-    async handleSubmit(address) {
+    defaultDataPointsToPlot(nitrateData) {
+
+    }
+
+    handleSubmit = async (address) => {
         let hucId = await getHucFromAddress(address);
         console.log("hucId: " + hucId);
 
@@ -60,43 +59,33 @@ class App extends Component {
             coords.push(loc);
         }
 
-        await this.setDataPoints(hucId);
+        console.log('coords', coords);
 
-        return this.setCoordinatesList(coords);
-    }
-
-    setCoordinatesList(coordinatesList) {
         this.setState({
-            coordinatesList
+            coordinatesList: coords
         });
-    }
 
-    async setDataPoints(hucId) {
-        let nitratePoints = await API.getNitrateData(hucId)
+        let nitratePoints = await API.getNitrateData(hucId);
+
         this.setState({
             ecoliData: await API.getEcoliData(hucId),
             nitrateData: nitratePoints,
             fibiData: await API.getFibiData(hucId)
         });
-        this.defaultDataPointsToPlot(nitratePoints);
-    }
 
-    defaultDataPointsToPlot(nitrateData) {
         this.setState({
-            dataPointsToPlot: nitrateData
-        })
-    }
+            dataPointsToPlot: nitratePoints
+        });
+    };
 
     render() {
-        const style = {
-            width: '100%',
-            height: '100%'
-        };
+        console.log('render', this.state.coordinatesList);
+
         return (
             <MuiThemeProvider theme={theme}>
                 <div className="App">
                     <Header title={HEADER_TITLE} />
-                    <PlottedMap {... this.props} />
+                    <PlottedMap google={this.props.google} coordinatesList={this.state.coordinatesList} dataPointsToPlot={this.state.dataPointsToPlot}  />
                     <AddressModal
                         handleClose={() => { }}
                         show={true}
