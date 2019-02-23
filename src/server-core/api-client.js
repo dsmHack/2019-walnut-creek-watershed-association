@@ -12,25 +12,14 @@ import Point from "./models/point";
 // axios.defaults.timeout = 1000000000;
 
 async function getEcoliData(huc) {
-    let charName = "Escherichia%20coli";
-    let sampleResult = await getSampleResults(huc, charName);
-    let dataSamples = getValueDataFromXml(sampleResult.data)
-
-    let locationResult = await getEpaStations(huc, charName);
-    let pointSamples = getLocationDataFromXml(locationResult.data)
-
-    for (let key of pointSamples.keys()) {
-        let data = dataSamples.get(key);
-        if (data !== undefined) {
-            pointSamples.get(key).datas.push(data);
-        }
-    }
-
-    return pointSamples;
+    return baseEpaQuery(huc, "Escherichia%20coli");
 }
 
 async function getNitrateData(huc) {
-    let charName = "Nitrate";
+    return baseEpaQuery(huc, "Nitrate");
+}
+
+async function baseEpaQuery(huc, charName) {
     let sampleResult = await getSampleResults(huc, charName);
     let dataSamples = getValueDataFromXml(sampleResult.data)
 
