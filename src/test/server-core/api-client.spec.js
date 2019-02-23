@@ -23,11 +23,11 @@ describe("ApiClient", () => {
 
     it('fibi should get data', () => {
         return api.getFibiData(huc12).then(function (data) {
-            expect(data).not.toBe(null);
+            expect(data).toEqual({ "data": [{ "class": "Good", "date": "2006-09-27T00:00:00", "name": "FIBI", "type": "Warm Water", "unit": "rating", "value": 57 }], "lat": 42.68869, "long": -94.79849, "name": "Big Cedar Creek" });
         })
     })
 
-    it('fibi should not error', ()=>{
+    it('fibi should not error', () => {
         return api.getFibiData(huc12).then(function (data) {
             expect(data).not.toBe("error");
         })
