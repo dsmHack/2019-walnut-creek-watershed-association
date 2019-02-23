@@ -7,6 +7,9 @@ import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
 import API from "../../server-core/main-service";
+import Location from "../../server-core/location-service";
+import BorderData from "../../server-core/border-data-api";
+import Utils from "../../utils/Utils"
 import {
     ADDRESS_MODAL_TITLE,
     ADDRESS_MODAL_INPUT_PLACEHOLDER
@@ -31,6 +34,10 @@ class AddressModal extends Component {
     }
 
     render() {
+        let sampleResultCallback = (results) => {
+            console.log("Sample Results: " + results);
+        };
+
         return (
             <Card className="modal">
                 <CardHeader className="title" title={ADDRESS_MODAL_TITLE} />
@@ -49,9 +56,22 @@ class AddressModal extends Component {
                         size="medium"
                         variant="contained"
                         color="primary"
-                        onClick={() =>
-                            API.getData(this.state.address, SWIMMING_LAYER)
-                        }
+                        onClick={async () => {
+                            let hucId = await Location.getHucFromAddress(this.state.address);
+                            console.log("hucId: " + hucId);
+
+                            // TODO hook up call and callback for ecoli data
+                            // let results = API.getData(this.state.address, SWIMMING_LAYER)
+                            // sampleResultCallback(results);
+
+                            let hucBorder = await BorderData.getHucBorder(hucId, "huc_12");
+                            console.log(hucBorder);
+
+                            let latlngs = Utils.convertEsriGeometryPolygonToLatLngList(hucBorder);
+
+                            this.props.setCoordinatesList(latlngs);
+                            console.log(latlngs);
+                        }}
                     >
                         NEXT
                     </Button>
@@ -60,6 +80,8 @@ class AddressModal extends Component {
         );
     }
 }
+
+
 
 AddressModal.propTypes = {
     handleClose: PropTypes.func.isRequired,

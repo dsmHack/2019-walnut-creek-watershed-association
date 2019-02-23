@@ -18,14 +18,26 @@ describe("Utils", () => {
 
         }];
 
-        esriGeometry = {};
-        esriGeometry.results = results;
+        esriGeometry = {
+            data: {
+                results: results
+            }
+        };
 
         expectedLatLngList = [getExampleLatLngList()];
     });
 
     it('should return empty list when esriGeometry is null', () => {
         expect(utils.convertEsriGeometryPolygonToLatLngList(null).length).toBe(0);
+    });
+
+    it('should return empty list when esriGeometry data is null', () => {
+        let esriGeometry = {
+            data: {
+
+            }
+        };
+        expect(utils.convertEsriGeometryPolygonToLatLngList(esriGeometry).length).toBe(0);
     });
 
     it('should return empty list when esriGeometry does not have result', () => {

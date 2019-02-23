@@ -8,7 +8,8 @@ async function getHucBorder(hucid, hucType) {
         "=false&returnM=false&gdbVersion=&returnUnformattedValues=false&returnFieldName=false&datumTransformations" +
         "=&layerParameterValues=&mapRangeValues=&layerRangeValues=&f=pjson";
 
-    axios.get(url).then((response) => {
+   return axios.get(url).then((response) => {
+        console.log(response);
         return response;
     })
         .catch((error) => {
@@ -17,4 +18,4 @@ async function getHucBorder(hucid, hucType) {
         });
 }
 
-module.exports = {getHucBorder};
+export default {getHucBorder};
