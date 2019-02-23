@@ -9,7 +9,7 @@ describe("ApiClient", () => {
     beforeEach(() => {
         jest.setTimeout(30000);
         huc = "07100006";
-        huc12 = "071000060204";
+        huc12 = "071000060904";
         charName = "Escherichia%20coli";
     });
 
@@ -25,7 +25,11 @@ describe("ApiClient", () => {
 
     it('fibi should get data', () => {
         return api.getFibiData(huc12).then(function (data) {
-            expect(data).toEqual({ "data": [{ "class": "Good", "date": "2006-09-27T00:00:00", "name": "FIBI", "type": "Warm Water", "unit": "rating", "value": 57 }], "lat": 42.68869, "long": -94.79849, "name": "Big Cedar Creek" });
+            expect(data.length).toBe(2);
+            expect(data[0].name).toEqual("Cedar Creek");
+            expect(data[0].datas.length).toEqual(1);
+            expect(data[1].name).toEqual("Cedar Creek");
+            expect(data[1].datas.length).toEqual(1);
         })
     })
 

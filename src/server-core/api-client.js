@@ -34,7 +34,7 @@ async function getNitrateData(huc) {
     let charName = "Nitrate";
     let sampleResult = await getSampleResults(huc, charName);
     let dataSamples = getValueDataFromXml(sampleResult.data)
-    
+
     let locationResult = await getEpaStations(huc, charName);
     let pointSamples = getLocationDataFromXml(locationResult.data)
 
@@ -44,7 +44,7 @@ async function getNitrateData(huc) {
 	    pointSamples.get(key).datas.push(data);
 	}
     }
-    
+
     return pointSamples;
 }
 
@@ -143,36 +143,6 @@ async function getFibiData(huc) {
         .then(siteIds => {
             return Promise.all(siteIds.map(fetchFibiDataBySiteId));
         })
-        .then(results => {
-            return [].concat.apply([], results);
-        })
-        .then(results => {
-            // sort
-            return results.sort((a, b) => {
-                return new Date(b.sampleDate) - new Date(a.sampleDate);
-            });
-        })
-        .then(results => {
-            // most recent
-            return results[0];
-        })
-        .then(result => {
-            return {
-                name: result.site.name,
-                lat: result.site.LatDD,
-                long: result.site.LongDD,
-                data: [
-                    {
-                        name: "FIBI",
-                        unit: "rating",
-                        value: result.FIBI,
-                        type: result.FIBIType,
-                        class: result.FIBIClass,
-                        date: result.sampleDate
-                    }
-                ]
-            };
-        })
         .catch(function(error) {
             // handle error
             console.log(error);
@@ -184,7 +154,30 @@ async function fetchFibiDataBySiteId(siteId) {
     var url = FIBI_BY_SITE_URL;
     return axios.get(url + siteId).then(response => {
         return response.data;
-    });
+    }).then(results => {
+        // sort
+        return results.sort((a, b) => {
+            return new Date(b.sampleDate) - new Date(a.sampleDate);
+        });
+    }).then(results => {
+        // most recent
+        return results[0];
+    }).then(result => {
+        var fibiSite = new Point();
+        fibiSite.name = result.site.name;
+        fibiSite.lat = result.site.LatDD;
+        fibiSite.long = result.site.LongDD;
+
+        var fibiData = new Data();
+        fibiData.name = "FIBI";
+        fibiData.unit = "rating";
+        fibiData.type = result.FIBIType;
+        fibiData.class = result.FIBIClass;
+        fibiData.date = result.sampleDate;
+
+        fibiSite.datas.push(fibiData);
+        return fibiSite;
+    })
 }
 
 async function getEpaStations(huc, characteristicName) {
