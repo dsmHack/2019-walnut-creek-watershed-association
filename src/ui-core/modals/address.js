@@ -6,7 +6,7 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
-import API from "../../server-core/api-client";
+import API from "../../server-core/main-service";
 import "./address.css";
 
 class AddressModal extends Component {
@@ -44,7 +44,7 @@ class AddressModal extends Component {
                         size="medium"
                         variant="contained"
                         color="primary"
-                        onClick={() => API.getSampleResults(this.state.address, "Escherichia%20coli")}
+                        onClick={() => API.getData(this.state.address, "swimming")}
                     >
                         NEXT
                     </Button>
