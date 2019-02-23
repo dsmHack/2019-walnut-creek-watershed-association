@@ -6,6 +6,9 @@ import {
     SAMPLE_RESULTS_URL,
     ERROR_SHE_GET_WET
 } from "./constants/urls";
+import Data from "./models/data";
+import Point from "./models/point";
+
 // axios.defaults.timeout = 1000000000;
 
 async function getEcoliData(huc) {
