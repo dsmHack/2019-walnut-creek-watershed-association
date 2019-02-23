@@ -20,7 +20,6 @@ class AddressModal extends Component {
         };
 
         this.handleChange = this.handleChange.bind(this);
-        // this.handleOnClick = this.handleOnClick.bind(this);
         this.handleKeyPress = this.handleKeyPress.bind(this);
     }
 
@@ -29,11 +28,6 @@ class AddressModal extends Component {
             address: target.value
         });
     }
-
-
-    // async handleOnClick(){
-    //     await this.props.handleSubmit(this.state.address);
-    // }
 
     async handleKeyPress(event) {
 	if(event.key === 'Enter'){

@@ -75,7 +75,7 @@ async function convertEsriGeometryPolygonToLatLngList(promise) {
 
     dataCordsQueryParam = dataCordsQueryParam.substring(0, dataCordsQueryParam.length - 1); // remove final semicolon
 
-    let url = `http://epsg.io/trans?data=${dataCordsQueryParam}&s_srs=3857&t_srs=4326`
+    let url = `https://epsg.io/trans?data=${dataCordsQueryParam}&s_srs=3857&t_srs=4326`
     return await axios.get(url).catch(error => {console.log(error)});
 }
 
