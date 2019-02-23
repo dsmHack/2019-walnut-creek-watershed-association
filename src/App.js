@@ -18,7 +18,6 @@ import blue from "@material-ui/core/colors/blue";
 import queryString from 'query-string'
 import { async } from "q";
 
-
 const theme = createMuiTheme({
     palette: {
         primary: blue,
@@ -50,19 +49,21 @@ class App extends Component {
             selectedLayer: DRINKING_LAYER,
             activity: "drink"
         };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.setCoordinatesList = this.setCoordinatesList.bind(this);
     }
 
-    componentDidMount() {
-        const values = queryString.parse(this.props.location.search);
-        if (["fish", "drink", "swim"].includes(values.activity)) {
-            this.setState({activity: values.activity});
-        }
+    defaultDataPointsToPlot(nitrateData) {
+
     }
 
-    async handleSubmit(address) {
+    // componentDidMount() {
+    //     console.log(this.props.location);
+    //     const values = queryString.parse(this.props.location.search);
+    //     if (["fish", "drink", "swim"].includes(values.activity)) {
+    //         this.setState({activity: values.activity});
+    //     }
+    // }
+
+    handleSubmit = async (address) => {
         let hucId = await getHucFromAddress(address);
         console.log("hucId: " + hucId);
 
@@ -78,47 +79,37 @@ class App extends Component {
             coords.push(loc);
         }
 
-        await this.setDataPoints(hucId);
+        console.log('coords', coords);
 
-        return this.setCoordinatesList(coords);
-    }
-
-    setCoordinatesList(coordinatesList) {
         this.setState({
-            coordinatesList
+            coordinatesList: coords
         });
-    }
 
-    async setDataPoints(hucId) {
-        let nitratePoints = await API.getNitrateData(hucId)
+        let nitratePoints = await API.getNitrateData(hucId);
+
         this.setState({
             ecoliData: await API.getEcoliData(hucId),
             nitrateData: nitratePoints,
             fibiData: await API.getFibiData(hucId)
         });
-        this.defaultDataPointsToPlot(nitratePoints);
-    }
 
-    defaultDataPointsToPlot(nitrateData) {
         this.setState({
-            dataPointsToPlot: nitrateData
-        })
-    }
+            dataPointsToPlot: nitratePoints
+        });
+    };
 
     render() {
-        const style = {
-            width: '100%',
-            height: '100%'
-        };
+        console.log('render', this.state.coordinatesList);
+
         return (
             <MuiThemeProvider theme={theme}>
                 <div className="App">
                     <Header title={HEADER_TITLE} />
+                    <PlottedMap google={this.props.google} coordinatesList={this.state.coordinatesList} dataPointsToPlot={this.state.dataPointsToPlot}  />
                     <ActivityTypeRadio handleClose={() => {}}
                                        show={true}
                                        value={this.state.activity}
                     />
-                    <PlottedMap {... this.props} />
                     <AddressModal
                         handleClose={() => { }}
                         show={true}

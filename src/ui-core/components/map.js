@@ -1,19 +1,13 @@
 import React, {Component} from "react"
-import { Map, Marker, GoogleApiWrapper, Polygon } from 'google-maps-react';
+import { Map, Marker, Polygon } from 'google-maps-react';
 
 class PlottedMap extends Component {
     constructor(props) {
         super();
         this.state = {
             dataPointsToPlot: props.dataPointsToPlot,
-            coordinatesList: []
+            coordinatesList: props.coordinatesList
         };
-    }
-
-    setCoordinatesList(coordinatesList) {
-        this.setState({
-            coordinatesList
-        });
     }
 
     createMarkers() {
@@ -37,6 +31,7 @@ class PlottedMap extends Component {
     }
 
     render() {
+        console.log('map render', this.props.coordinatesList);
         return (
             <Map
                 google={this.props.google}
@@ -44,7 +39,7 @@ class PlottedMap extends Component {
                 initialCenter={{ lat: 41.583586, lng: -93.628419 }}>
 
                 <Polygon
-                    paths={this.state.coordinatesList}
+                    paths={this.props.coordinatesList}
                     strokeColor="#0000FF"
                     strokeOpacity={0.8}
                     strokeWeight={2}
