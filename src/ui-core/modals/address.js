@@ -6,7 +6,7 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
-import API from "../../server-core/main-service";
+import ApiClient from "../../server-core/api-client";
 import Location from "../../server-core/location-service";
 import BorderData from "../../server-core/border-data-api";
 import {
@@ -66,8 +66,7 @@ class AddressModal extends Component {
                             let hucBorder = await BorderData.getHucBorder(hucId, "huc_12");
                             console.log(hucBorder);
 
-                            let latlngs = API.convertEsriGeometryPolygonToLatLngList(hucBorder);
-
+                            let latlngs = await ApiClient.convertEsriGeometryPolygonToLatLngList(hucBorder);
                             this.props.setCoordinatesList(latlngs);
                             console.log(latlngs);
                         }}
