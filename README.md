@@ -5,7 +5,12 @@ This is the repo for the dsmHack event for the team: 2019-team-11
     - https://www.waterqualitydata.us/webservices_documentation/
         - [WS Examples](https://www.waterqualitydata.us/webservices_documentation/#WQPWebServicesGuide-Domain)
     - https://programs.iowadnr.gov/geospatial/rest/services/Watersheds/Watersheds/MapServer
-
+    - https://programs.iowadnr.gov/aquia/Docs/ApiHelp
+    - https://programs.iowadnr.gov/bionet/Docs/ApiHelp
+    - https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates
+    - https://inlandwaters.geoplatform.gov/arcgis/rest/services/NHDPlus/WatershedBoundaryDataset/MapServer/10/query
+    - https://epsg.io/transform
+    - https://epsg.io/trans
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
