@@ -1,19 +1,20 @@
-import location from '../../server-core/location-service';
+import  getHucFromAddress from '../../server-core/location-service';
 
 describe("LocationService", () => {
     let addr;
 
     beforeEach(() => {
+        jest.setTimeout(60000);
         addr = "900 Mulberry St, Des Moines, IA 50309";
     });
 
     it('address should get data', () => {
-        return location.getHucFromAddress(addr).then((response) => {
+        return getHucFromAddress(addr).then((response) => {
             expect(response).toBe("071000061703");
         })
     })
 
     it('something should happen for bad input', () => {
-        return expect(location.getHucFromAddress("asldkfadlk")).rejects.toMatch('Address not found')
+        return expect(getHucFromAddress("asldkfadlk")).rejects.toMatch('Address not found')
     })
 })

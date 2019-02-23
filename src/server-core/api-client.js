@@ -63,8 +63,8 @@ function getValueDataFromXml(xml) {
     return samples;
 }
 
-async function convertEsriGeometryPolygonToLatLngList(stuff) {
-    let esriGeometry = stuff.data
+async function convertEsriGeometryPolygonToLatLngList(promise) {
+    let esriGeometry = promise.data
     var dataCordsQueryParam = '';
     if (esriGeometry != null && esriGeometry.results != null && esriGeometry.results.length > 0
         && esriGeometry.results[0].geometryType != null && esriGeometry.results[0].geometryType === ("esriGeometryPolygon")) {
@@ -168,8 +168,7 @@ async function fetchFibiDataBySiteId(siteId) {
 }
 
 async function getEpaStations(huc, characteristicName) {
-    let startDateLo = dateTwoMonthsAgo();
-    let query = EPA_URL + `startDateLo=${startDateLo}&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
+    let query = EPA_URL + `startDateLo=${dateTwoMonthsAgo()}&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
     return axios
         .get(query)
         .then(function(response) {
@@ -183,12 +182,16 @@ async function getEpaStations(huc, characteristicName) {
 }
 
 async function getSampleResults(huc, characteristicName) {
-    var url = SAMPLE_RESULTS_URL;
-    // TODO: externalize startDateLo from query -> subtract 2 months from today
-    var query = `startDateLo=01-01-2017&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
-    return axios.get(url + query).then().catch(error => {
+    var url = SAMPLE_RESULTS_URL + `startDateLo=${dateTwoMonthsAgo()}&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
+    return axios.get(url).then().catch(error => {
         console.log(error);
     });
+}
+
+function dateTwoMonthsAgo() {
+    let startDateLo = new Date();
+    startDateLo.setMonth(startDateLo.getMonth() - 2);
+    return startDateLo.toLocaleDateString().replace(/\//g, '-')
 }
 
 async function getHuc(lat, long) {}
