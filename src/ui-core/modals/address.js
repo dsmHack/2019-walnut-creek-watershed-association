@@ -7,6 +7,9 @@ import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
 import API from "../../server-core/main-service";
+import Location from "../../server-core/location-service";
+import BorderData from "../../server-core/border-data-api";
+import Utils from "../../utils/Utils"
 import "./address.css";
 
 class AddressModal extends Component {
@@ -44,7 +47,18 @@ class AddressModal extends Component {
                         size="medium"
                         variant="contained"
                         color="primary"
-                        onClick={() => API.getData(this.state.address, "swimming")}
+                        onClick={async () => {
+                            // API.getSampleResults(this.state.address, "Escherichia%20coli");
+                            let hucId = await Location.getHucFromAddress(this.state.address);
+
+                            console.log("hucId: " + hucId);
+
+                            // let results = await API.getData(hucId, "swimming");
+                            // sampleResultCallback(results);
+
+                            let hucBorder = await BorderData.getHucBorder(hucId);
+                            hucBorderCallback(hucBorder)
+                        }}
                     >
                         NEXT
                     </Button>
@@ -53,6 +67,20 @@ class AddressModal extends Component {
         );
     }
 }
+
+let sampleResultCallback = (results) => {
+    console.log("Sample Results: " + results);
+};
+
+let hucBorderCallback = (hucBorder) => {
+    console.log("hucBorderCallback " + hucBorder);
+
+    BorderData.getHucBorder(hucBorder, "huc_12").then((result) => {
+        console.log("Border " + result);
+        let latlngs = Utils.convertEsriGeometryPolygonToLatLngList(result);
+        console.log(latlngs);
+    })
+};
 
 AddressModal.propTypes = {
     handleClose: PropTypes.func.isRequired,
