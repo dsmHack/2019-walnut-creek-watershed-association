@@ -47,7 +47,8 @@ class App extends Component {
             nitrateData: [],
             fibiData: [],
             selectedLayer: DRINKING_LAYER,
-            activity: "drink"
+            activity: "drink",
+            showModal: true
         };
     }
 
@@ -80,7 +81,9 @@ class App extends Component {
         }
 
         this.setState({
-            coordinatesList: coords
+            coordinatesList: coords,
+            showModal: false
+
         });
 
         let nitratePoints = await API.getNitrateData(hucId);
@@ -96,6 +99,22 @@ class App extends Component {
         });
     };
 
+    renderModal(){
+        if(this.state.showModal){
+            return <AddressModal
+              handleClose={() => { }}
+              show={true}
+              setCoordinatesList={(coordinatesList) => {
+                  this.setCoordinatesList(coordinatesList)
+              }}
+              handleSubmit={this.handleSubmit}
+              setAddress={this.setAddress}
+            />
+        } else {
+            return null
+        }
+    }
+
     render() {
         console.log('render', this.state.coordinatesList);
 
@@ -108,15 +127,7 @@ class App extends Component {
                                        show={true}
                                        value={this.state.activity}
                     />
-                    <AddressModal
-                        handleClose={() => { }}
-                        show={true}
-                        setCoordinatesList={(coordinatesList) => {
-                            this.setCoordinatesList(coordinatesList)
-                        }}
-                        handleSubmit={this.handleSubmit}
-                        setAddress={this.setAddress}
-                    />
+                    {this.renderModal()}
                 </div>
             </MuiThemeProvider>
         );

@@ -35,7 +35,7 @@ class PlottedMap extends Component {
         return (
             <Map
                 google={this.props.google}
-                zoom={17}
+                zoom={13}
                 initialCenter={{ lat: 41.583586, lng: -93.628419 }}>
 
                 <Polygon
