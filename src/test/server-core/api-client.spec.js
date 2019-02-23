@@ -54,4 +54,9 @@ describe("ApiClient", () => {
         })
     })
 
+    it('convert cords to latlong', ()=>{
+        return api.convertEsriGeometryPolygonToLatLngList().then(function (data) {
+            console.log(data);
+        })
+    })
 })

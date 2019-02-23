@@ -31,6 +31,27 @@ async function getEcoliData(huc) {
     return samples;
 }
 
+async function convertEsriGeometryPolygonToLatLngList() {
+    let request = await axios.get('https://watersgeo.epa.gov/arcgis/rest/services/NHDPlus_NP21/WBD_NP21_Simplified/MapServer/find?searchText=070600051004&contains=true&searchFields=&sr=&layers=huc_12&layerDefs=&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&dynamicLayers=&returnZ=false&returnM=false&gdbVersion=&returnUnformattedValues=false&returnFieldName=false&datumTransformations&layerParameterValues&mapRangeValues&layerRangeValues&f=pjson');
+    let esriGeometry = request.data;
+    let latLngList = [];
+    if (esriGeometry != null && esriGeometry.results != null && esriGeometry.results.length > 0
+        && esriGeometry.results[0].geometryType != null && esriGeometry.results[0].geometryType === ("esriGeometryPolygon")) {
+            esriGeometry.results[0].geometry.rings[0].forEach((lngLat) => {
+                latLngList.push({lat: lngLat[1], lng: lngLat[0]});
+            });
+    }
+
+    var dataCordsQueryParam = '';
+    for (var cords of latLngList) {
+        dataCordsQueryParam += cords.lng + ',' + cords.lat + ';'
+    }
+    dataCordsQueryParam = dataCordsQueryParam.substring(0, dataCordsQueryParam.length - 1); // remove final semicolon
+
+    let url = `http://epsg.io/trans?data=${dataCordsQueryParam}&s_srs=3857&t_srs=4326`
+    return await axios.get(url);
+}
+
 async function getNitrateData(huc) {
     return await getSampleResults(huc, "Nitrate");
 }
@@ -128,5 +149,6 @@ export default {
     getFibiData,
     getEpaStations,
     getSampleResults,
-    getHuc
+    getHuc,
+    convertEsriGeometryPolygonToLatLngList
 };
