@@ -69,6 +69,8 @@ class AddressModal extends Component {
 
                             let latlngs = Utils.convertEsriGeometryPolygonToLatLngList(hucBorder);
 
+                            //let dataPoints =
+
                             this.props.setCoordinatesList(latlngs);
                             console.log(latlngs);
                         }}
