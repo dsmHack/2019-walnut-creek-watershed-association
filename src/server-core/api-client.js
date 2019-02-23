@@ -72,9 +72,7 @@ function getValueDataFromXml(xml) {
     return samples;
 }
 
-async function convertEsriGeometryPolygonToLatLngList() {
-    let request = await axios.get('https://watersgeo.epa.gov/arcgis/rest/services/NHDPlus_NP21/WBD_NP21_Simplified/MapServer/find?searchText=070600051004&contains=true&searchFields=&sr=&layers=huc_12&layerDefs=&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&dynamicLayers=&returnZ=false&returnM=false&gdbVersion=&returnUnformattedValues=false&returnFieldName=false&datumTransformations&layerParameterValues&mapRangeValues&layerRangeValues&f=pjson');
-    let esriGeometry = request.data;
+async function convertEsriGeometryPolygonToLatLngList(esriGeometry) {
     let latLngList = [];
     if (esriGeometry != null && esriGeometry.results != null && esriGeometry.results.length > 0
         && esriGeometry.results[0].geometryType != null && esriGeometry.results[0].geometryType === ("esriGeometryPolygon")) {
