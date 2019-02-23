@@ -1,4 +1,5 @@
 import api from '../../server-core/api-client';
+import axios from "axios";
 
 describe("ApiClient", () => {
     let huc;
@@ -54,8 +55,10 @@ describe("ApiClient", () => {
         })
     })
 
-    it('convert cords to latlong', ()=>{
-        return api.convertEsriGeometryPolygonToLatLngList().then(function (data) {
+    it('convert cords to latlong', async ()=>{
+        let request = await axios.get('https://watersgeo.epa.gov/arcgis/rest/services/NHDPlus_NP21/WBD_NP21_Simplified/MapServer/find?searchText=070600051004&contains=true&searchFields=&sr=&layers=huc_12&layerDefs=&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&dynamicLayers=&returnZ=false&returnM=false&gdbVersion=&returnUnformattedValues=false&returnFieldName=false&datumTransformations&layerParameterValues&mapRangeValues&layerRangeValues&f=pjson');
+        let esriGeometry = request.data;
+        return api.convertEsriGeometryPolygonToLatLngList(esriGeometry).then(function (data) {
             console.log(data);
         })
     })
