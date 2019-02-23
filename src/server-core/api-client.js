@@ -29,7 +29,6 @@ async function getEcoliData(huc) {
     return pointSamples;
 }
 
-
 async function getNitrateData(huc) {
     let charName = "Nitrate";
     let sampleResult = await getSampleResults(huc, charName);
@@ -204,6 +203,7 @@ async function getHuc(lat, long) {}
 
 export default {
     getEcoliData,
+    getNitrateData,
     getFibiData,
     getEpaStations,
     getSampleResults,
