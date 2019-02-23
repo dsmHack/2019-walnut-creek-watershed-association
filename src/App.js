@@ -3,7 +3,6 @@ import {Map, Marker, GoogleApiWrapper, Polygon} from 'google-maps-react';
 import "./App.css";
 import Header from "./ui-core/components/header";
 import AddressModal from "./ui-core/modals/address";
-import {HEADER_TITLE} from "./ui-core/constants/header";
 
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import blue from "@material-ui/core/colors/blue";
@@ -33,7 +32,7 @@ class App extends Component {
             coordinatesList	
         });	
     }
-    
+
     render() {
         const triangleCoords = [
             {lat: 41.583943, lng: -93.629191},
@@ -50,7 +49,7 @@ class App extends Component {
         return (
             <MuiThemeProvider theme={theme}>
                 <div className="App">
-                    <Header title={HEADER_TITLE} />
+                    <Header title="Find Water Quality Near Me" />
 
                     <Map
                       google={this.props.google}
@@ -59,7 +58,7 @@ class App extends Component {
                       initialCenter={{lat: 41.583586, lng: -93.628419}}>
 
                         <Polygon
-                          paths={this.state.coordinatesList}
+                          paths={triangleCoords}
                           strokeColor="#0000FF"
                           strokeOpacity={0.8}
                           strokeWeight={2}
