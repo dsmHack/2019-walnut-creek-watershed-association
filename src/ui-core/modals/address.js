@@ -64,11 +64,16 @@ class AddressModal extends Component {
                             // sampleResultCallback(results);
 
                             let hucBorder = await BorderData.getHucBorder(hucId, "huc_12");
-                            console.log(hucBorder);
 
-                            let latlngs = await ApiClient.convertEsriGeometryPolygonToLatLngList(hucBorder);
-                            this.props.setCoordinatesList(latlngs);
-                            console.log(latlngs);
+                            let latlngs = await ApiClient.convertEsriGeometryPolygonToLatLngList(hucBorder).data;
+                            let coords = [];
+                            for (var latlng of latlngs) {
+                                let loc = {};
+                                loc.lat = Number(latlng.y);
+                                loc.lng = Number(latlng.x);
+                                coords.push(loc);
+                            }
+                            this.props.setCoordinatesList(coords);
                         }}
                     >
                         NEXT
