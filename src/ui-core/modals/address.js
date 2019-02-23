@@ -10,6 +10,11 @@ import API from "../../server-core/main-service";
 import Location from "../../server-core/location-service";
 import BorderData from "../../server-core/border-data-api";
 import Utils from "../../utils/Utils"
+import {
+    ADDRESS_MODAL_TITLE,
+    ADDRESS_MODAL_INPUT_PLACEHOLDER
+} from "../constants/address";
+import { SWIMMING_LAYER } from "../../constants_shared/layers";
 import "./address.css";
 
 class AddressModal extends Component {
@@ -24,7 +29,7 @@ class AddressModal extends Component {
 
     handleChange({ target }) {
         this.setState({
-            "address": target.value
+            address: target.value
         });
     }
 
@@ -35,13 +40,13 @@ class AddressModal extends Component {
 
         return (
             <Card className="modal">
-                <CardHeader className="title" title="TYPE YOUR ADDRESS" />
+                <CardHeader className="title" title={ADDRESS_MODAL_TITLE} />
                 <CardContent>
                     <TextField
                         className="address"
                         type="text"
                         value={this.state.address}
-                        placeholder="Enter Address Here.."
+                        placeholder={ADDRESS_MODAL_INPUT_PLACEHOLDER}
                         onChange={this.handleChange}
                     />
                 </CardContent>
@@ -52,12 +57,11 @@ class AddressModal extends Component {
                         variant="contained"
                         color="primary"
                         onClick={async () => {
-                            // API.getSampleResults(this.state.address, "Escherichia%20coli");
                             let hucId = await Location.getHucFromAddress(this.state.address);
-
                             console.log("hucId: " + hucId);
 
-                            // let results = await API.getData(hucId, "swimming");
+                            // TODO hook up call and callback for ecoli data
+                            // let results = API.getData(this.state.address, SWIMMING_LAYER)
                             // sampleResultCallback(results);
 
                             let hucBorder = await BorderData.getHucBorder(hucId, "huc_12");
@@ -68,7 +72,6 @@ class AddressModal extends Component {
                             this.props.setCoordinatesList(latlngs);
                             console.log(latlngs);
                         }}
-
                     >
                         NEXT
                     </Button>

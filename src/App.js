@@ -3,6 +3,7 @@ import {Map, Marker, GoogleApiWrapper, Polygon} from 'google-maps-react';
 import "./App.css";
 import Header from "./ui-core/components/header";
 import AddressModal from "./ui-core/modals/address";
+import {HEADER_TITLE} from "./ui-core/constants/header";
 
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import blue from "@material-ui/core/colors/blue";
@@ -44,7 +45,7 @@ class App extends Component {
         return (
             <MuiThemeProvider theme={theme}>
                 <div className="App">
-                    <Header title="Find Water Quality Near Me" />
+                    <Header title={HEADER_TITLE} />
 
                     <Map
                       google={this.props.google}
