@@ -6,6 +6,7 @@ describe("ApiClient", () => {
     let charName;
 
     beforeEach(() => {
+        jest.setTimeout(30000);
         huc = "07100006";
         huc12 = "071000060204";
         charName = "Escherichia%20coli";
@@ -32,4 +33,25 @@ describe("ApiClient", () => {
             expect(data).not.toBe("error");
         })
     })
+
+    it('validate results', ()=>{
+        const expectedResults = new Map([
+            ["21IOWA_WQX-10810001", "4600"],
+            ["21IOWA_WQX-21130001", "41"],
+            ["21IOWA_WQX-21130002", "63"],
+            ["21IOWA_WQX-21810001", "20"],
+            ["21IOWA_WQX-21810002", null],
+            ["21IOWA_WQX-22110001", "3.1"],
+            ["21IOWA_WQX-22130001", "2"],
+            ["21IOWA_WQX-22810002", "3.1"],
+            ["IOWAGW_WQX-31250002", null],
+        ]);
+
+        return api.getEcoliData(huc).then(function (data) {
+            for (var key of data.keys()) {
+                expect(data.get(key).value).toBe(expectedResults.get(key))
+            }
+        })
+    })
+
 })

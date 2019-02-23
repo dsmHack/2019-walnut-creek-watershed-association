@@ -1,20 +1,38 @@
 import convert from 'xml-js';
 import axios from 'axios';
+// axios.defaults.timeout = 1000000000;
 
 async function getEcoliData(huc) {
-    var url = "https://www.waterqualitydata.us/data/Result/search?"
-    var query = "startDateLo=01-01-2017&huc=" + huc + "&mimeType=xml&characteristicName=Escherichia%20coli";
-    axios.get(url + query)
-    .then(function (response) {
-        // handle success
-        console.log(response);
-        return convert.xml2json(response, {compact: true, spaces: 4});
-    })
-    .catch(function (error) {
-        // handle error
-        console.log(error);
-        return "She get wet";
-    });
+    let charName = "Escherichia%20coli";
+    let result = await getSampleResults(huc, charName);
+    // let locations = await getEpaStations(huc, charName);
+
+    let parsedResult = new DOMParser().parseFromString(result.data, "text/xml");
+    let activities = parsedResult.getElementsByTagName("Activity");
+
+    let samples = new Map();
+    for (let activity of activities) {
+            let sample = {};
+            const getTagValue = (qualifiedName) => {
+                let tag = activity.getElementsByTagName(qualifiedName)[0];
+                return (tag === undefined) ? null :tag.childNodes[0].nodeValue;
+            };
+
+            sample.name = getTagValue("MonitoringLocationIdentifier");
+            sample.date = getTagValue("ActivityStartDate");
+            sample.value = getTagValue("ResultMeasureValue");
+
+            let existing = samples[sample.name];
+            if (existing == null || (Date.parse(sample.date) > Date.parse(existing.date))) {
+                samples.set(sample.name, sample);
+            }
+    }
+
+    return samples;
+}
+
+async function getNitrateData(huc) {
+    return await getSampleResults(huc, "Nitrate");
 }
 
 async function getFibiData(huc) {
@@ -53,6 +71,7 @@ async function fetchFibiDataBySiteId(siteId) {
 
 async function getEpaStations(huc, characteristicName) {
     var url = "https://www.waterqualitydata.us/data/Station/search?"
+    // TODO: externalize startDateLo from query
     var query = "startDateLo=01-01-2017&huc=" + huc + "&mimeType=xml&characteristicName=Nitrate" + characteristicName;
     axios.get(url + query)
     .then(function (response) {
@@ -69,18 +88,9 @@ async function getEpaStations(huc, characteristicName) {
 
 async function getSampleResults(huc, characteristicName) {
     var url = "https://www.waterqualitydata.us/data/Result/search?"
+    // TODO: externalize startDateLo from query -> subtract 2 months from today
     var query = "startDateLo=01-01-2017&huc=" + huc + "&mimeType=xml&characteristicName=" + characteristicName;
-    axios.get(url + query)
-    .then(function (response) {
-        // handle success
-        console.log(response);
-        return response;
-    })
-    .catch(function (error) {
-        // handle error
-        console.log(error);
-        return "She get wet";
-    });
+    return axios.get(url + query);
 }
 
 async function getHuc(lat, long) {
