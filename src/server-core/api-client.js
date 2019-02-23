@@ -189,7 +189,7 @@ async function getSampleResults(huc, characteristicName) {
 function dateTwoMonthsAgo() {
     let startDateLo = new Date();
     startDateLo.setMonth(startDateLo.getMonth() - 2);
-    return startDateLo.toLocaleDateString();
+    return startDateLo.toLocaleDateString().replace(/\//g, '-')
 }
 
 async function getHuc(lat, long) {}
