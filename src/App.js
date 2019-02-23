@@ -79,8 +79,6 @@ class App extends Component {
             coords.push(loc);
         }
 
-        console.log('coords', coords);
-
         this.setState({
             coordinatesList: coords
         });
