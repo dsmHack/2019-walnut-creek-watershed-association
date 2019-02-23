@@ -1,0 +1,11 @@
+<MonitoringLocation>
+  <MonitoringLocationIdentity>
+       <MonitoringLocationIdentifier>21IOWA_WQX-10810001</MonitoringLocationIdentifier>
+       <MonitoringLocationName>North Raccoon River near Sac City (DS1)</MonitoringLocationName>
+       <HUCEightDigitCode>07100006</HUCEightDigitCode>
+    </MonitoringLocationIdentity>
+    <MonitoringLocationGeospatial>
+       <LatitudeMeasure>42.340001</LatitudeMeasure>
+       <LongitudeMeasure>-94.985712</LongitudeMeasure>
+    </MonitoringLocationGeospatial>
+</MonitoringLocation>
