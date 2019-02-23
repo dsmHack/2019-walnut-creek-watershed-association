@@ -65,7 +65,7 @@ class AddressModal extends Component {
 
                             let hucBorder = await BorderData.getHucBorder(hucId, "huc_12");
 
-                            let latlngs = await ApiClient.convertEsriGeometryPolygonToLatLngList(hucBorder).data;
+                            let latlngs = (await ApiClient.convertEsriGeometryPolygonToLatLngList(hucBorder)).data;
                             let coords = [];
                             for (var latlng of latlngs) {
                                 let loc = {};
