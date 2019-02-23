@@ -1,35 +1,12 @@
-import convert from "xml-js";
 import axios from "axios";
 import {
     FIBI_URL,
     FIBI_BY_SITE_URL,
     EPA_URL,
-    WATERSHED_DATA_URL,
     SAMPLE_RESULTS_URL,
     ERROR_SHE_GET_WET
 } from "./constants/urls";
 // axios.defaults.timeout = 1000000000;
-
-class Point {
-    constructor(){
-	this.locId = "";
-	this.name = "";
-	this.lat = 0.0;
-	this.long = 0.0;
-	this.datas = [];
-    }
-}
-
-class Data {
-    constructor(){
-	this.name = "";
-	this.unit = "";
-	this.value = 0.0;
-	this.date = "";
-	this.locId = "";
-    }
-}
-
 
 async function getEcoliData(huc) {
     let charName = "Escherichia%20coli";
