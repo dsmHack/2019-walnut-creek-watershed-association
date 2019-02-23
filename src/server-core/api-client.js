@@ -16,7 +16,6 @@ async function getEcoliData(huc) {
     let locationResult = await getEpaStations(huc, charName);
     let pointSamples = getLocationDataFromXml(locationResult.data)
 
-    //TODO: Need to combine the sample data to the locations
     for (let key of pointSamples.keys()) {
         let data = dataSamples.get(key);
         if (data !== undefined) {
@@ -30,11 +29,20 @@ async function getEcoliData(huc) {
 
 async function getNitrateData(huc) {
     let charName = "Nitrate";
-    let result =  await getSampleResults(huc, charName);
-    let locations = await getEpaStations(huc, charName);
-    let samples = GetDataFromXml(result.data)
+    let sampleResult = await getSampleResults(huc, charName);
+    let dataSamples = getValueDataFromXml(sampleResult.data)
+    
+    let locationResult = await getEpaStations(huc, charName);
+    let pointSamples = getLocationDataFromXml(locationResult.data)
 
-    return samples;
+    for (let key of pointSamples.keys()) {
+	let data = dataSamples.get(key);
+	if (data !== undefined) {
+	    pointSamples.get(key).datas.push(data);
+	}
+    }
+    
+    return pointSamples;
 }
 
 function getValueDataFromXml(xml) {
