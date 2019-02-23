@@ -1,4 +1,4 @@
-import location from '../../server-core/location-service';
+import  getHucFromAddress from '../../server-core/location-service';
 
 describe("LocationService", () => {
     let addr;
@@ -8,12 +8,12 @@ describe("LocationService", () => {
     });
 
     it('address should get data', () => {
-        return location.getHucFromAddress(addr).then((response) => {
+        return getHucFromAddress(addr).then((response) => {
             expect(response).toBe("071000061703");
         })
     })
 
     it('something should happen for bad input', () => {
-        return expect(location.getHucFromAddress("asldkfadlk")).rejects.toMatch('Address not found')
+        return expect(getHucFromAddress("asldkfadlk")).rejects.toMatch('Address not found')
     })
 })

@@ -1,4 +1,4 @@
-import api from '../../server-core/border-data-api';
+import getHucBorder from '../../server-core/border-data-api';
 
 describe("BorderDataAPI", () => {
     let hucid;
@@ -11,7 +11,7 @@ describe("BorderDataAPI", () => {
     });
 
     it('huc border data', () => {
-        return api.getHucBorder(hucid, hucType).then((response) => {
+        return getHucBorder(hucid, hucType).then((response) => {
             expect(test).not.toBe(undefined);
         });
     });
