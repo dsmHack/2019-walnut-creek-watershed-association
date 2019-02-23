@@ -30,24 +30,41 @@ async function getFibiData(huc) {
         .get(url + huc8)
         .then(response => {
             return response.data;
-        })
-        .then(sites => {
+        }).then(sites => {
             if (isHuc12) {
                 var filteredSites = sites.filter(site => site.huc12 === huc);
                 return Promise.resolve(filteredSites);
             }
             return Promise.resolve(sites);
-        })
-        .then(sites => {
+        }).then(sites => {
             return sites.map(site => site.id);
-        })
-        .then(siteIds => {
+        }).then(siteIds => {
             return Promise.all(siteIds.map(fetchFibiDataBySiteId));
-        })
-        .then(results => {
+        }).then(results => {
             return [].concat.apply([], results);
-        })
-        .catch(function(error) {
+        }).then(results => {
+            // sort
+            return results.sort((a, b) => {
+                return new Date(b.sampleDate) - new Date(a.sampleDate);
+            });
+        }).then(results => {
+            // most recent
+            return results[0];
+        }).then(result => {
+            return {
+                name: result.site.name,
+                lat: result.site.LatDD,
+                long: result.site.LongDD,
+                data: [{
+                    name: "FIBI",
+                    unit: "rating",
+                    value: result.FIBI,
+                    type: result.FIBIType,
+                    class: result.FIBIClass,
+                    date: result.sampleDate
+                }]
+            }
+        }).catch(function (error) {
             // handle error
             console.log(error);
             return "error";
