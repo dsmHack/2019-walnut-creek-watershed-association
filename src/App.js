@@ -7,12 +7,16 @@ import Header from "./ui-core/components/header";
 import AddressModal from "./ui-core/modals/address";
 import { HEADER_TITLE } from "./ui-core/constants/header";
 import { DRINKING_LAYER } from "./constants_shared/layers";
+import ActivityTypeRadio from "./ui-core/components/radio-activity-type";
 import getHucBorder from "./server-core/border-data-api";
 import getHucFromAddress from "./server-core/location-service";
 import API from "./server-core/api-client";
 
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import {createMuiTheme, MuiThemeProvider} from "@material-ui/core/styles";
+import {BrowserRouter as Router, Route} from "react-router-dom";
 import blue from "@material-ui/core/colors/blue";
+import queryString from 'query-string'
+import { async } from "q";
 
 const theme = createMuiTheme({
     palette: {
@@ -26,6 +30,13 @@ const theme = createMuiTheme({
     }
 });
 
+const AppRouting = () => (
+    <Router>
+        <Route exact path="/" component={App}/>
+    </Router>
+);
+
+
 class App extends Component {
     constructor() {
         super();
@@ -36,12 +47,21 @@ class App extends Component {
             nitrateData: [],
             fibiData: [],
             selectedLayer: DRINKING_LAYER,
+            activity: "drink"
         };
     }
 
     defaultDataPointsToPlot(nitrateData) {
 
     }
+
+    // componentDidMount() {
+    //     console.log(this.props.location);
+    //     const values = queryString.parse(this.props.location.search);
+    //     if (["fish", "drink", "swim"].includes(values.activity)) {
+    //         this.setState({activity: values.activity});
+    //     }
+    // }
 
     handleSubmit = async (address) => {
         let hucId = await getHucFromAddress(address);
@@ -86,6 +106,10 @@ class App extends Component {
                 <div className="App">
                     <Header title={HEADER_TITLE} />
                     <PlottedMap google={this.props.google} coordinatesList={this.state.coordinatesList} dataPointsToPlot={this.state.dataPointsToPlot}  />
+                    <ActivityTypeRadio handleClose={() => {}}
+                                       show={true}
+                                       value={this.state.activity}
+                    />
                     <AddressModal
                         handleClose={() => { }}
                         show={true}
@@ -103,4 +127,5 @@ class App extends Component {
 
 export default GoogleApiWrapper({
     apiKey: ('AIzaSyDE4Rtouj6STI2E15qtuwH_VAI2cjS1iFs')
+    // apiKey: ('AIzaSyBbQM-FxetsrzMqbJ2xzZbcbDUb9Au4nh4')
 })(App)
