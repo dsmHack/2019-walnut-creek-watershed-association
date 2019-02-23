@@ -52,4 +52,4 @@ async function getWatershedData(location) {
         });
 }
 
-export default { getHucFromAddress };
+export default getHucFromAddress;
