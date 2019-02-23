@@ -1,4 +1,5 @@
 import api from '../../server-core/api-client';
+import axios from "axios";
 
 describe("ApiClient", () => {
     let huc;
@@ -8,7 +9,7 @@ describe("ApiClient", () => {
     beforeEach(() => {
         jest.setTimeout(30000);
         huc = "07100006";
-        huc12 = "071000060204";
+        huc12 = "071000060904";
         charName = "Escherichia%20coli";
     });
 
@@ -24,7 +25,13 @@ describe("ApiClient", () => {
 
     it('fibi should get data', () => {
         return api.getFibiData(huc12).then(function (data) {
-            expect(data).toEqual({ "data": [{ "class": "Good", "date": "2006-09-27T00:00:00", "name": "FIBI", "type": "Warm Water", "unit": "rating", "value": 57 }], "lat": 42.68869, "long": -94.79849, "name": "Big Cedar Creek" });
+            expect(data.length).toBe(2);
+            expect(data[0].name).toEqual("Cedar Creek - Lohrville -- Univ. 40 Park");
+            expect(data[0].datas.length).toEqual(1);
+            expect(data[0].datas[0].value).toEqual(43);
+            expect(data[1].name).toEqual("Cedar Creek - NW Of Churdan");
+            expect(data[1].datas.length).toEqual(1);
+            expect(data[1].datas[0].value).toEqual(40);
         })
     })
 
@@ -54,9 +61,11 @@ describe("ApiClient", () => {
         })
     })
 
-    it('convert cords to latlong', ()=>{
-        return api.convertEsriGeometryPolygonToLatLngList().then(function (data) {
-            console.log(data);
+    it('convert cords to latlong', async ()=>{
+        let request = await axios.get('https://watersgeo.epa.gov/arcgis/rest/services/NHDPlus_NP21/WBD_NP21_Simplified/MapServer/find?searchText=070600051004&contains=true&searchFields=&sr=&layers=huc_12&layerDefs=&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&dynamicLayers=&returnZ=false&returnM=false&gdbVersion=&returnUnformattedValues=false&returnFieldName=false&datumTransformations&layerParameterValues&mapRangeValues&layerRangeValues&f=pjson');
+        let esriGeometry = request.data;
+        return api.convertEsriGeometryPolygonToLatLngList(esriGeometry).then(function (response) {
+            return expect(response.data.length).toBe(24)
         })
     })
 })

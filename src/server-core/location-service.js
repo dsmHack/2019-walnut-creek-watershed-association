@@ -1,5 +1,5 @@
 import axios from "axios";
-import { HUC_FROM_ADDRESS_URL, WATERSHED_DATA_URL } from "./constants/urls";
+import { HUC_FROM_ADDRESS_URL, WATERSHED_DATA_URL, ERROR_ADDRESS_NOT_FOUND, ERROR_WATERSHED_NOT_FOUND } from "./constants/urls";
 
 async function getHucFromAddress(address) {
     var url = HUC_FROM_ADDRESS_URL;
@@ -14,7 +14,7 @@ async function getHucFromAddress(address) {
         })
         .then(response => {
             if (typeof response.data.candidates[0] === "undefined") {
-                return Promise.reject("address not found");
+                return Promise.reject(ERROR_ADDRESS_NOT_FOUND);
             }
             var firstCandidate = response.data.candidates[0];
             return {
@@ -46,7 +46,7 @@ async function getWatershedData(location) {
         })
         .then(response => {
             if (typeof response.data.features[0] === "undefined") {
-                return Promise.reject("watershed not found");
+                return Promise.reject(ERROR_WATERSHED_NOT_FOUND);
             }
             return response.data.features[0].attributes.HUC12;
         });

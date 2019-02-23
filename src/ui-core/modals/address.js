@@ -6,10 +6,9 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
-import API from "../../server-core/main-service";
+import ApiClient from "../../server-core/api-client";
 import Location from "../../server-core/location-service";
 import BorderData from "../../server-core/border-data-api";
-import Utils from "../../utils/Utils"
 import {
     ADDRESS_MODAL_TITLE,
     ADDRESS_MODAL_INPUT_PLACEHOLDER
@@ -65,14 +64,16 @@ class AddressModal extends Component {
                             // sampleResultCallback(results);
 
                             let hucBorder = await BorderData.getHucBorder(hucId, "huc_12");
-                            console.log(hucBorder);
 
-                            let latlngs = Utils.convertEsriGeometryPolygonToLatLngList(hucBorder);
-
-                            //let dataPoints =
-
-                            this.props.setCoordinatesList(latlngs);
-                            console.log(latlngs);
+                            let latlngs = (await ApiClient.convertEsriGeometryPolygonToLatLngList(hucBorder)).data;
+                            let coords = [];
+                            for (var latlng of latlngs) {
+                                let loc = {};
+                                loc.lat = Number(latlng.y);
+                                loc.lng = Number(latlng.x);
+                                coords.push(loc);
+                            }
+                            this.props.setCoordinatesList(coords);
                         }}
                     >
                         NEXT

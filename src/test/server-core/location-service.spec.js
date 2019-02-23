@@ -14,6 +14,6 @@ describe("LocationService", () => {
     })
 
     it('something should happen for bad input', () => {
-        return expect(location.getHucFromAddress("asldkfadlk")).rejects.toMatch('address not found')
+        return expect(location.getHucFromAddress("asldkfadlk")).rejects.toMatch('Address not found')
     })
 })

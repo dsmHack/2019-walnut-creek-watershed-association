@@ -6,6 +6,9 @@ import {
     SAMPLE_RESULTS_URL,
     ERROR_SHE_GET_WET
 } from "./constants/urls";
+import Data from "./models/data";
+import Point from "./models/point";
+
 // axios.defaults.timeout = 1000000000;
 
 async function getEcoliData(huc) {
@@ -31,17 +34,17 @@ async function getNitrateData(huc) {
     let charName = "Nitrate";
     let sampleResult = await getSampleResults(huc, charName);
     let dataSamples = getValueDataFromXml(sampleResult.data)
-    
+
     let locationResult = await getEpaStations(huc, charName);
     let pointSamples = getLocationDataFromXml(locationResult.data)
 
     for (let key of pointSamples.keys()) {
-	let data = dataSamples.get(key);
-	if (data !== undefined) {
-	    pointSamples.get(key).datas.push(data);
-	}
+        let data = dataSamples.get(key);
+        if (data !== undefined) {
+            pointSamples.get(key).datas.push(data);
+        }
     }
-    
+
     return pointSamples;
 }
 
@@ -50,18 +53,17 @@ function getValueDataFromXml(xml) {
     let activities = parsedResult.getElementsByTagName("Activity");
     let samples = new Map();
     for (let activity of activities) {
-	let sample = new Data();
-
+	    let sample = new Data();
         const getTagValue = (qualifiedName) => {
             let tag = activity.getElementsByTagName(qualifiedName)[0];
             return (tag === undefined) ? null :tag.childNodes[0].nodeValue;
         };
 
         sample.name = getTagValue("CharacteristicName");
-	sample.locId = getTagValue("MonitoringLocationIdentifier");
+	    sample.locId = getTagValue("MonitoringLocationIdentifier");
         sample.date = getTagValue("ActivityStartDate");
         sample.value = getTagValue("ResultMeasureValue");
-	sample.unit = getTagValue("MeasureUnitCode");
+	    sample.unit = getTagValue("MeasureUnitCode");
 
         let existing = samples[sample.locId];
         if (existing == null || (Date.parse(sample.date) > Date.parse(existing.date))) {
@@ -72,21 +74,16 @@ function getValueDataFromXml(xml) {
     return samples;
 }
 
-async function convertEsriGeometryPolygonToLatLngList() {
-    let request = await axios.get('https://watersgeo.epa.gov/arcgis/rest/services/NHDPlus_NP21/WBD_NP21_Simplified/MapServer/find?searchText=070600051004&contains=true&searchFields=&sr=&layers=huc_12&layerDefs=&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&dynamicLayers=&returnZ=false&returnM=false&gdbVersion=&returnUnformattedValues=false&returnFieldName=false&datumTransformations&layerParameterValues&mapRangeValues&layerRangeValues&f=pjson');
-    let esriGeometry = request.data;
-    let latLngList = [];
+async function convertEsriGeometryPolygonToLatLngList(stuff) {
+    let esriGeometry = stuff.data
+    var dataCordsQueryParam = '';
     if (esriGeometry != null && esriGeometry.results != null && esriGeometry.results.length > 0
         && esriGeometry.results[0].geometryType != null && esriGeometry.results[0].geometryType === ("esriGeometryPolygon")) {
         esriGeometry.results[0].geometry.rings[0].forEach((lngLat) => {
-            latLngList.push({lat: lngLat[1], lng: lngLat[0]});
+            dataCordsQueryParam += lngLat[0] + ',' + lngLat[1] + ';'
         });
     }
 
-    var dataCordsQueryParam = '';
-    for (var cords of latLngList) {
-        dataCordsQueryParam += cords.lng + ',' + cords.lat + ';'
-    }
     dataCordsQueryParam = dataCordsQueryParam.substring(0, dataCordsQueryParam.length - 1); // remove final semicolon
 
     let url = `http://epsg.io/trans?data=${dataCordsQueryParam}&s_srs=3857&t_srs=4326`
@@ -98,15 +95,14 @@ function getLocationDataFromXml(xml) {
     let locations = parsedResult.getElementsByTagName("MonitoringLocation");
     let samples = new Map();
     for (let location of locations) {
-	let sample = new Point()
-
+	    let sample = new Point()
         const getTagValue = (qualifiedName) => {
             let tag = location.getElementsByTagName(qualifiedName)[0];
             return (tag === undefined) ? null :tag.childNodes[0].nodeValue;
         };
 
         sample.locId = getTagValue("MonitoringLocationIdentifier");
-	sample.name = getTagValue("MonitoringLocationName");
+	    sample.name = getTagValue("MonitoringLocationName");
         sample.lat = getTagValue("LatitudeMeasure");
         sample.long = getTagValue("LongitudeMeasure");
 
@@ -142,36 +138,6 @@ async function getFibiData(huc) {
         .then(siteIds => {
             return Promise.all(siteIds.map(fetchFibiDataBySiteId));
         })
-        .then(results => {
-            return [].concat.apply([], results);
-        })
-        .then(results => {
-            // sort
-            return results.sort((a, b) => {
-                return new Date(b.sampleDate) - new Date(a.sampleDate);
-            });
-        })
-        .then(results => {
-            // most recent
-            return results[0];
-        })
-        .then(result => {
-            return {
-                name: result.site.name,
-                lat: result.site.LatDD,
-                long: result.site.LongDD,
-                data: [
-                    {
-                        name: "FIBI",
-                        unit: "rating",
-                        value: result.FIBI,
-                        type: result.FIBIType,
-                        class: result.FIBIClass,
-                        date: result.sampleDate
-                    }
-                ]
-            };
-        })
         .catch(function(error) {
             // handle error
             console.log(error);
@@ -183,7 +149,31 @@ async function fetchFibiDataBySiteId(siteId) {
     var url = FIBI_BY_SITE_URL;
     return axios.get(url + siteId).then(response => {
         return response.data;
-    });
+    }).then(results => {
+        // sort
+        return results.sort((a, b) => {
+            return new Date(b.sampleDate) - new Date(a.sampleDate);
+        });
+    }).then(results => {
+        // most recent
+        return results[0];
+    }).then(result => {
+        var fibiSite = new Point();
+        fibiSite.name = result.site.name + " - " + result.site.landmark;
+        fibiSite.lat = result.site.LatDD;
+        fibiSite.long = result.site.LongDD;
+
+        var fibiData = new Data();
+        fibiData.name = "FIBI";
+        fibiData.unit = "rating";
+        fibiData.value = result.FIBI;
+        fibiData.type = result.FIBIType;
+        fibiData.class = result.FIBIClass;
+        fibiData.date = result.sampleDate;
+
+        fibiSite.datas.push(fibiData);
+        return fibiSite;
+    })
 }
 
 async function getEpaStations(huc, characteristicName) {
