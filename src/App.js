@@ -13,6 +13,7 @@ import API from "./server-core/api-client";
 
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import blue from "@material-ui/core/colors/blue";
+import { async } from "q";
 
 
 const theme = createMuiTheme({
@@ -36,34 +37,32 @@ class App extends Component {
             ecoliData: [],
             nitrateData: [],
             fibiData: [],
-            selectedLayer: DRINKING_LAYER
+            selectedLayer: DRINKING_LAYER,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.setCoordinatesList = this.setCoordinatesList.bind(this);
     }
 
-    handleSubmit() {
-        return async () => {
-            let hucId = await getHucFromAddress(this.state.address);
-            console.log("hucId: " + hucId);
+    async handleSubmit(address) {
+        let hucId = await getHucFromAddress(address);
+        console.log("hucId: " + hucId);
 
-            let hucBorder = await getHucBorder(hucId, "huc_12");
-            console.log(hucBorder);
+        let hucBorder = await getHucBorder(hucId, "huc_12");
+        console.log(hucBorder);
 
-            let latlngs = (await API.convertEsriGeometryPolygonToLatLngList(hucBorder)).data;
-                            let coords = [];
-                            for (var latlng of latlngs) {
-                                let loc = {};
-                                loc.lat = Number(latlng.y);
-                                loc.lng = Number(latlng.x);
-                                coords.push(loc);
-                            }
-
-            this.setDataPoints(hucId);
-
-            this.props.setCoordinatesList(coords);
-            console.log(coords);
+        let latlngs = (await API.convertEsriGeometryPolygonToLatLngList(hucBorder)).data;
+        let coords = [];
+        for (var latlng of latlngs) {
+            let loc = {};
+            loc.lat = Number(latlng.y);
+            loc.lng = Number(latlng.x);
+            coords.push(loc);
         }
+
+        await this.setDataPoints(hucId);
+
+        return this.setCoordinatesList(coords);
     }
 
     setCoordinatesList(coordinatesList) {
@@ -72,12 +71,12 @@ class App extends Component {
         });
     }
 
-    setDataPoints(hucId) {
-        let nitratePoints = API.getNitrateData(hucId)
+    async setDataPoints(hucId) {
+        let nitratePoints = await API.getNitrateData(hucId)
         this.setState({
-            ecoliData: API.getEcoliData(hucId),
+            ecoliData: await API.getEcoliData(hucId),
             nitrateData: nitratePoints,
-            fibiData: API.getFibiData(hucId)
+            fibiData: await API.getFibiData(hucId)
         });
         this.defaultDataPointsToPlot(nitratePoints);
     }
@@ -104,7 +103,8 @@ class App extends Component {
                         setCoordinatesList={(coordinatesList) => {
                             this.setCoordinatesList(coordinatesList)
                         }}
-                        onClick={this.handleSubmit}
+                        handleSubmit={this.handleSubmit}
+                        setAddress={this.setAddress}
                     />
                 </div>
             </MuiThemeProvider>
@@ -113,5 +113,5 @@ class App extends Component {
 }
 
 export default GoogleApiWrapper({
-    apiKey: ('AIzaSyBbQM-FxetsrzMqbJ2xzZbcbDUb9Au4nh4')
+    apiKey: ('AIzaSyDE4Rtouj6STI2E15qtuwH_VAI2cjS1iFs')
 })(App)
