@@ -50,7 +50,7 @@ class App extends Component {
             let hucBorder = await getHucBorder(hucId, "huc_12");
             console.log(hucBorder);
 
-            let latlngs = (await Api.convertEsriGeometryPolygonToLatLngList(hucBorder)).data;
+            let latlngs = (await API.convertEsriGeometryPolygonToLatLngList(hucBorder)).data;
                             let coords = [];
                             for (var latlng of latlngs) {
                                 let loc = {};
