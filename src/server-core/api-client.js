@@ -72,7 +72,7 @@ function getValueDataFromXml(xml) {
     let activities = parsedResult.getElementsByTagName("Activity");
     let samples = new Map();
     for (let activity of activities) {
-	let sample = new data()
+	let sample = new Data();
 	
         const getTagValue = (qualifiedName) => {
             let tag = activity.getElementsByTagName(qualifiedName)[0];
