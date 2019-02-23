@@ -7,12 +7,15 @@ import Header from "./ui-core/components/header";
 import AddressModal from "./ui-core/modals/address";
 import { HEADER_TITLE } from "./ui-core/constants/header";
 import { DRINKING_LAYER } from "./constants_shared/layers";
+import ActivityTypeRadio from "./ui-core/components/radio-activity-type";
 import getHucBorder from "./server-core/border-data-api";
 import getHucFromAddress from "./server-core/location-service";
 import API from "./server-core/api-client";
 
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import {createMuiTheme, MuiThemeProvider} from "@material-ui/core/styles";
+import {BrowserRouter as Router, Route} from "react-router-dom";
 import blue from "@material-ui/core/colors/blue";
+import queryString from 'query-string'
 
 
 const theme = createMuiTheme({
@@ -27,6 +30,13 @@ const theme = createMuiTheme({
     }
 });
 
+const AppRouting = () => (
+    <Router>
+        <Route exact path="/" component={App}/>
+    </Router>
+);
+
+
 class App extends Component {
     constructor() {
         super();
@@ -36,10 +46,19 @@ class App extends Component {
             ecoliData: [],
             nitrateData: [],
             fibiData: [],
-            selectedLayer: DRINKING_LAYER
+            selectedLayer: DRINKING_LAYER,
+            activity: "drink"
+
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    componentDidMount() {
+        const values = queryString.parse(this.props.location.search);
+        if (["fish", "drink", "swim"].includes(values.activity)) {
+            this.setState({activity: values.activity});
+        }
     }
 
     handleSubmit() {
@@ -97,6 +116,10 @@ class App extends Component {
             <MuiThemeProvider theme={theme}>
                 <div className="App">
                     <Header title={HEADER_TITLE} />
+                    <ActivityTypeRadio handleClose={() => {}}
+                                       show={true}
+                                       value={this.state.activity}
+                    />
                     <PlottedMap {... this.props} />
                     <AddressModal
                         handleClose={() => { }}
@@ -114,4 +137,4 @@ class App extends Component {
 
 export default GoogleApiWrapper({
     apiKey: ('AIzaSyBbQM-FxetsrzMqbJ2xzZbcbDUb9Au4nh4')
-})(App)
+})(AppRouting)
