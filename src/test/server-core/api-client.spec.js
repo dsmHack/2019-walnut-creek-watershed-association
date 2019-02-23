@@ -7,7 +7,7 @@ describe("ApiClient", () => {
     let charName;
 
     beforeEach(() => {
-        jest.setTimeout(30000);
+        jest.setTimeout(60000);
         huc = "07100006";
         huc12 = "071000060904";
         charName = "Escherichia%20coli";

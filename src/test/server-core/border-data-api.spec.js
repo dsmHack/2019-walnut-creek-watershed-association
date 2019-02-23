@@ -5,7 +5,7 @@ describe("BorderDataAPI", () => {
     let hucType;
 
     beforeEach(() => {
-        jest.setTimeout(30000);
+        jest.setTimeout(60000);
         hucid = "070600051004";
         hucType = "huc_12";
     });
