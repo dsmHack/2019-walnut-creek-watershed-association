@@ -32,6 +32,14 @@ class AddressModal extends Component {
     async handleOnClick(){
         await this.props.handleSubmit(this.state.address);
     }
+
+    async handleKeyPress({ target }) {
+	if(target.key === 'Enter'){
+            //do something
+	    await this.props.handleSubmit(this.state.address);
+        }
+    }
+    
     render() {
         return (
             <Card className="modal">
@@ -43,7 +51,8 @@ class AddressModal extends Component {
                         value={this.state.address}
                         placeholder={ADDRESS_MODAL_INPUT_PLACEHOLDER}
                         onChange={this.handleChange}
-                    />
+	    onKeyPress={this.handleKeyPress}
+                />
                 </CardContent>
                 <CardActions>
                     <Button
