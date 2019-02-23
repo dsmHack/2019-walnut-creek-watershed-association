@@ -26,10 +26,12 @@ describe("ApiClient", () => {
     it('fibi should get data', () => {
         return api.getFibiData(huc12).then(function (data) {
             expect(data.length).toBe(2);
-            expect(data[0].name).toEqual("Cedar Creek");
+            expect(data[0].name).toEqual("Cedar Creek - Lohrville -- Univ. 40 Park");
             expect(data[0].datas.length).toEqual(1);
-            expect(data[1].name).toEqual("Cedar Creek");
+            expect(data[0].datas[0].value).toEqual(43);
+            expect(data[1].name).toEqual("Cedar Creek - NW Of Churdan");
             expect(data[1].datas.length).toEqual(1);
+            expect(data[1].datas[0].value).toEqual(40);
         })
     })
 

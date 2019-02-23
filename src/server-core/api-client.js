@@ -159,13 +159,14 @@ async function fetchFibiDataBySiteId(siteId) {
         return results[0];
     }).then(result => {
         var fibiSite = new Point();
-        fibiSite.name = result.site.name;
+        fibiSite.name = result.site.name + " - " + result.site.landmark;
         fibiSite.lat = result.site.LatDD;
         fibiSite.long = result.site.LongDD;
 
         var fibiData = new Data();
         fibiData.name = "FIBI";
         fibiData.unit = "rating";
+        fibiData.value = result.FIBI;
         fibiData.type = result.FIBIType;
         fibiData.class = result.FIBIClass;
         fibiData.date = result.sampleDate;
