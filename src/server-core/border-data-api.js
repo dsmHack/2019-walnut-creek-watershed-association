@@ -9,7 +9,6 @@ async function getHucBorder(hucid, hucType) {
         "=&layerParameterValues=&mapRangeValues=&layerRangeValues=&f=pjson";
 
    return axios.get(url).then((response) => {
-        console.log(response);
         return response;
     })
         .catch((error) => {
