@@ -1,31 +1,64 @@
-import convert from "xml-js";
 import axios from "axios";
+import {
+    FIBI_URL,
+    FIBI_BY_SITE_URL,
+    EPA_URL,
+    SAMPLE_RESULTS_URL,
+    ERROR_SHE_GET_WET
+} from "./constants/urls";
 // axios.defaults.timeout = 1000000000;
 
 async function getEcoliData(huc) {
     let charName = "Escherichia%20coli";
-    let result = await getSampleResults(huc, charName);
-    // let locations = await getEpaStations(huc, charName);
+    let sampleResult = await getSampleResults(huc, charName);
+    let dataSamples = getValueDataFromXml(sampleResult.data)
 
-    let parsedResult = new DOMParser().parseFromString(result.data, "text/xml");
+    let locationResult = await getEpaStations(huc, charName);
+    let pointSamples = getLocationDataFromXml(locationResult.data)
+
+    //TODO: Need to combine the sample data to the locations
+    for (let key of pointSamples.keys()) {
+	let data = dataSamples.get(key);
+	if (data !== undefined) {
+	    pointSamples.get(key).datas.push(data);
+	}
+    }
+
+    return pointSamples;
+}
+
+
+async function getNitrateData(huc) {
+    let charName = "Nitrate";
+    let result =  await getSampleResults(huc, charName);
+    let locations = await getEpaStations(huc, charName);
+    let samples = GetDataFromXml(result.data)
+
+    return samples;
+}
+
+function getValueDataFromXml(xml) {
+    let parsedResult = new DOMParser().parseFromString(xml, "text/xml");
     let activities = parsedResult.getElementsByTagName("Activity");
-
     let samples = new Map();
-        for (let activity of activities) {
-            let sample = {};
-            const getTagValue = (qualifiedName) => {
-                let tag = activity.getElementsByTagName(qualifiedName)[0];
-                return (tag === undefined) ? null :tag.childNodes[0].nodeValue;
-            };
+    for (let activity of activities) {
+	let sample = new Data();
 
-            sample.name = getTagValue("MonitoringLocationIdentifier");
-            sample.date = getTagValue("ActivityStartDate");
-            sample.value = getTagValue("ResultMeasureValue");
+        const getTagValue = (qualifiedName) => {
+            let tag = activity.getElementsByTagName(qualifiedName)[0];
+            return (tag === undefined) ? null :tag.childNodes[0].nodeValue;
+        };
 
-            let existing = samples[sample.name];
-            if (existing == null || (Date.parse(sample.date) > Date.parse(existing.date))) {
-                samples.set(sample.name, sample);
-            }
+        sample.name = getTagValue("CharacteristicName");
+	sample.locId = getTagValue("MonitoringLocationIdentifier");
+        sample.date = getTagValue("ActivityStartDate");
+        sample.value = getTagValue("ResultMeasureValue");
+	sample.unit = getTagValue("MeasureUnitCode");
+
+        let existing = samples[sample.locId];
+        if (existing == null || (Date.parse(sample.date) > Date.parse(existing.date))) {
+            samples.set(sample.locId, sample);
+        }
     }
 
     return samples;
@@ -37,9 +70,9 @@ async function convertEsriGeometryPolygonToLatLngList() {
     let latLngList = [];
     if (esriGeometry != null && esriGeometry.results != null && esriGeometry.results.length > 0
         && esriGeometry.results[0].geometryType != null && esriGeometry.results[0].geometryType === ("esriGeometryPolygon")) {
-            esriGeometry.results[0].geometry.rings[0].forEach((lngLat) => {
-                latLngList.push({lat: lngLat[1], lng: lngLat[0]});
-            });
+        esriGeometry.results[0].geometry.rings[0].forEach((lngLat) => {
+            latLngList.push({lat: lngLat[1], lng: lngLat[0]});
+        });
     }
 
     var dataCordsQueryParam = '';
@@ -56,89 +89,120 @@ async function getNitrateData(huc) {
     return await getSampleResults(huc, "Nitrate");
 }
 
+function getLocationDataFromXml(xml) {
+    let parsedResult = new DOMParser().parseFromString(xml, "text/xml");
+    let locations = parsedResult.getElementsByTagName("MonitoringLocation");
+    let samples = new Map();
+    for (let location of locations) {
+	let sample = new Point()
+
+        const getTagValue = (qualifiedName) => {
+            let tag = location.getElementsByTagName(qualifiedName)[0];
+            return (tag === undefined) ? null :tag.childNodes[0].nodeValue;
+        };
+
+        sample.locId = getTagValue("MonitoringLocationIdentifier");
+	sample.name = getTagValue("MonitoringLocationName");
+        sample.lat = getTagValue("LatitudeMeasure");
+        sample.long = getTagValue("LongitudeMeasure");
+
+        let existing = samples[sample.locId];
+        if (existing == null || (Date.parse(sample.date) > Date.parse(existing.date))) {
+            samples.set(sample.locId, sample);
+        }
+    }
+
+    return samples;
+}
+
 async function getFibiData(huc) {
     var isHuc12 = huc.length === 12;
     var huc8 = huc.substring(0, 8);
-    var url = "https://programs.iowadnr.gov/bionet/api/v1/sites/by_huc8/";
+    var url = FIBI_URL;
 
     return axios
         .get(url + huc8)
         .then(response => {
             return response.data;
-        }).then(sites => {
+        })
+        .then(sites => {
             if (isHuc12) {
                 var filteredSites = sites.filter(site => site.huc12 === huc);
                 return Promise.resolve(filteredSites);
             }
             return Promise.resolve(sites);
-        }).then(sites => {
+        })
+        .then(sites => {
             return sites.map(site => site.id);
-        }).then(siteIds => {
+        })
+        .then(siteIds => {
             return Promise.all(siteIds.map(fetchFibiDataBySiteId));
-        }).then(results => {
+        })
+        .then(results => {
             return [].concat.apply([], results);
-        }).then(results => {
+        })
+        .then(results => {
             // sort
             return results.sort((a, b) => {
                 return new Date(b.sampleDate) - new Date(a.sampleDate);
             });
-        }).then(results => {
+        })
+        .then(results => {
             // most recent
             return results[0];
-        }).then(result => {
+        })
+        .then(result => {
             return {
                 name: result.site.name,
                 lat: result.site.LatDD,
                 long: result.site.LongDD,
-                data: [{
-                    name: "FIBI",
-                    unit: "rating",
-                    value: result.FIBI,
-                    type: result.FIBIType,
-                    class: result.FIBIClass,
-                    date: result.sampleDate
-                }]
-            }
-        }).catch(function (error) {
+                data: [
+                    {
+                        name: "FIBI",
+                        unit: "rating",
+                        value: result.FIBI,
+                        type: result.FIBIType,
+                        class: result.FIBIClass,
+                        date: result.sampleDate
+                    }
+                ]
+            };
+        })
+        .catch(function(error) {
             // handle error
             console.log(error);
-            return "error";
+            return ERROR_SHE_GET_WET;
         });
 }
 
 async function fetchFibiDataBySiteId(siteId) {
-    var url = "https://programs.iowadnr.gov/bionet/api/v1/fish/fibi/by_site/";
+    var url = FIBI_BY_SITE_URL;
     return axios.get(url + siteId).then(response => {
         return response.data;
     });
 }
 
 async function getEpaStations(huc, characteristicName) {
-    var url = "https://www.waterqualitydata.us/data/Station/search?";
+    var url = EPA_URL;
     // TODO: externalize startDateLo from query
-    var query =
-        "startDateLo=01-01-2017&huc=" +
-        huc +
-        "&mimeType=xml&characteristicName=Nitrate" +
-        characteristicName;
-    axios
+    var query = `startDateLo=01-01-2017&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
+    return axios
         .get(url + query)
         .then(function(response) {
             // handle success
-            console.log(response);
-            return convert.xml2json(response, { compact: true, spaces: 4 });
+            return response;
         })
         .catch(function(error) {
             // handle error
-            console.log(error);
-            return "She get wet";
+            return ERROR_SHE_GET_WET;
         });
 }
 
 async function getSampleResults(huc, characteristicName) {
-    var url = "https://www.waterqualitydata.us/data/Result/search?";
+    var url = SAMPLE_RESULTS_URL;
     // TODO: externalize startDateLo from query -> subtract 2 months from today
-    var query = "startDateLo=01-01-2017&huc=" + huc + "&mimeType=xml&characteristicName=" + characteristicName;
+    var query = `
+        "startDateLo=01-01-2017&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
     return axios.get(url + query);
 }
 

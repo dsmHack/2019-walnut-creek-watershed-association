@@ -1,0 +1,15 @@
+<Activity>
+  <ActivityDescription>
+    <ActivityStartDate>2017-01-19</ActivityStartDate>
+    <MonitoringLocationIdentifier>21IOWA_WQX-10810001</MonitoringLocationIdentifier>
+  </ActivityDescription>
+  <Result>
+    <ResultDescription>
+      <CharacteristicName>Escherichia coli</CharacteristicName>
+      <ResultMeasure>
+        <ResultMeasureValue>1500</ResultMeasureValue>
+        <MeasureUnitCode>MPN/100ml</MeasureUnitCode>
+      </ResultMeasure>
+    </ResultDescription>
+  </Result>
+</Activity>
