@@ -24,11 +24,15 @@ class PlottedMap extends Component {
     createMarker(point) {
         console.log("Point", point);
         const actualPoint = point[1];
+        let url = "/images/low.png";
+        if(actualPoint.locId == "PCCB_WQX-977082"){
+            url = "/images/med.png";
+        }
         return <Marker
             key={actualPoint.locId}
             position={{ lat: actualPoint.lat, lng: actualPoint.long }}
             icon={{
-                url: "/images/low.png",
+                url: url,
                 anchor: new window.google.maps.Point(24, 24),
                 scaledSize: new window.google.maps.Size(48, 48)
             }}
