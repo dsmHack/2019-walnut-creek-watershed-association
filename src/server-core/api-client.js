@@ -21,7 +21,6 @@ async function getNitrateData(huc) {
 
 async function baseEpaQuery(huc, charName) {
     let sampleResult = await getSampleResults(huc, charName);
-    console.log(sampleResult);
     let dataSamples = getValueDataFromXml(sampleResult.data)
 
     let locationResult = await getEpaStations(huc, charName);
