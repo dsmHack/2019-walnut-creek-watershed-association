@@ -7,13 +7,14 @@ import Header from "./ui-core/components/header";
 import AddressModal from "./ui-core/modals/address";
 import { HEADER_TITLE } from "./ui-core/constants/header";
 import { DRINKING_LAYER } from "./constants_shared/layers";
+import { SWIMMING_LAYER } from "./constants_shared/layers";
 import ActivityTypeRadio from "./ui-core/components/radio-activity-type";
 import getHucBorder from "./server-core/border-data-api";
 import getHucFromAddress from "./server-core/location-service";
 import API from "./server-core/api-client";
 
-import {createMuiTheme, MuiThemeProvider} from "@material-ui/core/styles";
-import {BrowserRouter as Router, Route} from "react-router-dom";
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import blue from "@material-ui/core/colors/blue";
 import queryString from 'query-string'
 import { async } from "q";
@@ -32,7 +33,7 @@ const theme = createMuiTheme({
 
 const AppRouting = () => (
     <Router>
-        <Route exact path="/" component={App}/>
+        <Route exact path="/" component={App} />
     </Router>
 );
 
@@ -66,10 +67,7 @@ class App extends Component {
 
     handleSubmit = async (address) => {
         let hucId = await getHucFromAddress(address);
-        console.log("hucId: " + hucId);
-
         let hucBorder = await getHucBorder(hucId, "huc_12");
-        console.log(hucBorder);
 
         let latlngs = (await API.convertEsriGeometryPolygonToLatLngList(hucBorder)).data;
         let coords = [];
@@ -87,9 +85,10 @@ class App extends Component {
         });
 
         let nitratePoints = await API.getNitrateData(hucId);
+        let ecoliPoints = await API.getEcoliData(hucId);
 
         this.setState({
-            ecoliData: await API.getEcoliData(hucId),
+            ecoliData: ecoliPoints,
             nitrateData: nitratePoints,
             fibiData: await API.getFibiData(hucId)
         });
@@ -99,16 +98,16 @@ class App extends Component {
         });
     };
 
-    renderModal(){
-        if(this.state.showModal){
+    renderModal() {
+        if (this.state.showModal) {
             return <AddressModal
-              handleClose={() => { }}
-              show={true}
-              setCoordinatesList={(coordinatesList) => {
-                  this.setCoordinatesList(coordinatesList)
-              }}
-              handleSubmit={this.handleSubmit}
-              setAddress={this.setAddress}
+                handleClose={() => { }}
+                show={true}
+                setCoordinatesList={(coordinatesList) => {
+                    this.setCoordinatesList(coordinatesList)
+                }}
+                handleSubmit={this.handleSubmit}
+                setAddress={this.setAddress}
             />
         } else {
             return null
@@ -116,16 +115,14 @@ class App extends Component {
     }
 
     render() {
-        console.log('render', this.state.coordinatesList);
-
         return (
             <MuiThemeProvider theme={theme}>
                 <div className="App">
                     <Header title={HEADER_TITLE} />
-                    <PlottedMap google={this.props.google} coordinatesList={this.state.coordinatesList} dataPointsToPlot={this.state.dataPointsToPlot}  />
-                    <ActivityTypeRadio handleClose={() => {}}
-                                       show={true}
-                                       value={this.state.activity}
+                    <PlottedMap google={this.props.google} coordinatesList={this.state.coordinatesList} dataPointsToPlot={this.state.dataPointsToPlot} />
+                    <ActivityTypeRadio handleClose={() => { }}
+                        show={true}
+                        value={this.state.activity}
                     />
                     {this.renderModal()}
                 </div>

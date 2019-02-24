@@ -4,24 +4,29 @@ import { Map, Marker, Polygon } from 'google-maps-react';
 class PlottedMap extends Component {
     constructor(props) {
         super();
-        this.state = {
-            dataPointsToPlot: props.dataPointsToPlot,
-            coordinatesList: props.coordinatesList
-        };
+        this.markers = []
+        this.shouldCreateMarkers = true;
     }
 
     createMarkers() {
-        if(this.state.dataPointsToPlot != undefined){
-            this.state.dataPointsToPlot.forEach(dataPoint => {
-                return this.createMarker(dataPoint);
-            });
+        if(this.props.dataPointsToPlot !== undefined && this.props.dataPointsToPlot !== []){
+            console.log("Running create", this.props.dataPointsToPlot);
+            for(var dataPoint of this.props.dataPointsToPlot){
+                this.markers.push(this.createMarker(dataPoint));
+            };
+            if(this.markers.length > 0){
+
+            }
         }
         
     }
 
     createMarker(point) {
+        console.log("Point", point);
+        const actualPoint = point[1];
         return <Marker
-            position={{ lat: point.lat, lng: point.lng }}
+            key={actualPoint.locId}
+            position={{ lat: actualPoint.lat, lng: actualPoint.long }}
             icon={{
                 url: "/images/low.png",
                 anchor: new window.google.maps.Point(24, 24),
@@ -30,8 +35,18 @@ class PlottedMap extends Component {
         />
     }
 
+    renderMarkers() {
+        if(this.shouldCreateMarkers){
+            this.createMarkers();
+        }
+
+        if(this.markers.length > 0 ){
+            console.log("render Markers: ", this.markers);
+            return this.markers
+        }
+    }
+
     render() {
-        console.log('map render', this.props.coordinatesList);
         return (
             <Map
                 google={this.props.google}
@@ -46,7 +61,7 @@ class PlottedMap extends Component {
                     fillColor="#0000FF"
                     fillOpacity={0.35} />
 
-                {this.createMarkers()}
+                {this.renderMarkers()}
 
             </Map>
         )
