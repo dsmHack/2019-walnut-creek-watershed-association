@@ -7,29 +7,14 @@ import Header from "./ui-core/components/header";
 import AddressModal from "./ui-core/modals/address";
 import { HEADER_TITLE } from "./ui-core/constants/header";
 import { DRINKING_LAYER } from "./constants_shared/layers";
-import { SWIMMING_LAYER } from "./constants_shared/layers";
 import ActivityTypeRadio from "./ui-core/components/radio-activity-type";
 import getHucBorder from "./server-core/border-data-api";
 import getHucFromAddress from "./server-core/location-service";
 import API from "./server-core/api-client";
+import AppTheme from "./theme";
 
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import blue from "@material-ui/core/colors/blue";
-import queryString from 'query-string'
-import { async } from "q";
-
-const theme = createMuiTheme({
-    palette: {
-        primary: blue,
-        secondary: {
-            main: "#84ffff"
-        }
-    },
-    typography: {
-        useNextVariants: true
-    }
-});
 
 const AppRouting = () => (
     <Router>
@@ -116,7 +101,7 @@ class App extends Component {
 
     render() {
         return (
-            <MuiThemeProvider theme={theme}>
+            <MuiThemeProvider theme={AppTheme}>
                 <div className="App">
                     <Header title={HEADER_TITLE} />
                     <PlottedMap google={this.props.google} coordinatesList={this.state.coordinatesList} dataPointsToPlot={this.state.dataPointsToPlot} />
@@ -132,7 +117,7 @@ class App extends Component {
 }
 
 const loadAPIKey = () => {
-    if(process.env.NODE_ENV == "development"){
+    if(process.env.NODE_ENV === "development"){
         return process.env.REACT_APP_DEV_GOOGLE_MAPS;
     }
     return process.env.REACT_APP_PROD_GOOGLE_MAPS;
