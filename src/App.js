@@ -131,6 +131,13 @@ class App extends Component {
     }
 }
 
+const loadAPIKey = () => {
+    if(process.env.NODE_ENV == "development"){
+        return process.env.REACT_APP_DEV_GOOGLE_MAPS;
+    }
+    return process.env.REACT_APP_PROD_GOOGLE_MAPS;
+}
+
 export default GoogleApiWrapper({
-    apiKey: ('AIzaSyBbQM-FxetsrzMqbJ2xzZbcbDUb9Au4nh4')
+    apiKey: (loadAPIKey())
 })(App)
