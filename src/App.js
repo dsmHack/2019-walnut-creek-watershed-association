@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { Provider } from "react-redux";
+import store from "./ui-core/dux/store";
 import { GoogleApiWrapper } from 'google-maps-react';
 import "./App.css";
 
@@ -101,23 +103,25 @@ class App extends Component {
 
     render() {
         return (
-            <MuiThemeProvider theme={AppTheme}>
-                <div className="App">
-                    <Header title={HEADER_TITLE} />
-                    <PlottedMap google={this.props.google} coordinatesList={this.state.coordinatesList} dataPointsToPlot={this.state.dataPointsToPlot} />
-                    <ActivityTypeRadio handleClose={() => { }}
-                        show={true}
-                        value={this.state.activity}
-                    />
-                    {this.renderModal()}
-                </div>
-            </MuiThemeProvider>
+            <Provider store={store}>
+                <MuiThemeProvider theme={AppTheme}>
+                    <div className="App">
+                        <Header title={HEADER_TITLE} />
+                        <PlottedMap google={this.props.google} coordinatesList={this.state.coordinatesList} dataPointsToPlot={this.state.dataPointsToPlot} />
+                        <ActivityTypeRadio handleClose={() => { }}
+                            show={true}
+                            value={this.state.activity}
+                        />
+                        {this.renderModal()}
+                    </div>
+                </MuiThemeProvider>
+            </Provider>
         );
     }
 }
 
 const loadAPIKey = () => {
-    if(process.env.NODE_ENV === "development"){
+    if (process.env.NODE_ENV === "development") {
         return process.env.REACT_APP_DEV_GOOGLE_MAPS;
     }
     return process.env.REACT_APP_PROD_GOOGLE_MAPS;

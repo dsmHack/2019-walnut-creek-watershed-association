@@ -10,7 +10,6 @@ class PlottedMap extends Component {
 
     createMarkers() {
         if(this.props.dataPointsToPlot !== undefined && this.props.dataPointsToPlot !== []){
-            console.log("Running create", this.props.dataPointsToPlot);
             for(var dataPoint of this.props.dataPointsToPlot){
                 this.markers.push(this.createMarker(dataPoint));
             };
@@ -25,7 +24,7 @@ class PlottedMap extends Component {
         console.log("Point", point);
         const actualPoint = point[1];
         let url = "/images/low.png";
-        if(actualPoint.locId == "PCCB_WQX-977082"){
+        if(actualPoint.locId === "PCCB_WQX-977082"){
             url = "/images/med.png";
         }
         return <Marker
