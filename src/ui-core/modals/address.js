@@ -5,24 +5,22 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
-import {
-    ADDRESS_MODAL_TITLE,
-    ADDRESS_MODAL_INPUT_PLACEHOLDER
-} from "../constants/address";
+import { ADDRESS_MODAL_TITLE, ADDRESS_MODAL_INPUT_PLACEHOLDER } from "../constants/address";
 import "./address.css";
 
-import {actions} from "../dux/address";
-import {connect} from "react-redux";
+import { actions } from "../dux/address";
+import { connect } from "react-redux";
 
-function mapStateToProps(state){
+function mapStateToProps(state) {
     return {
-        address: state.address
-    }
+        address: state.address.address,
+        showAddressModal: state.address.showAddressModal
+    };
 }
 
-const AddressModal = (props) => {
+const AddressModal = props => {
     return (
-        <Card className="modal">
+        <Card className="modal" style={displayModal()}>
             <CardHeader className="title" title={ADDRESS_MODAL_TITLE} />
             <CardContent>
                 <TextField
@@ -38,17 +36,29 @@ const AddressModal = (props) => {
                     size="medium"
                     variant="contained"
                     color="primary"
-                    onClick={() => {}}
+                    onClick={handleSubmit}
                 >
                     NEXT
-        </Button>;
+                </Button>
+                ;
             </CardActions>
         </Card>
     );
 
-    function handleOnChange(e){
+    function handleSubmit(){
+        props.hideModal();
+    }
+
+    function handleOnChange(e) {
         props.addAddress(e.target.value);
     }
-}
 
-export default connect(mapStateToProps, actions)(AddressModal);
+    function displayModal() {
+        return props.showAddressModal ? { display: "block" } : { display: "none" };
+    }
+};
+
+export default connect(
+    mapStateToProps,
+    actions
+)(AddressModal);
