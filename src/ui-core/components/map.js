@@ -1,73 +1,74 @@
-import React, {Component} from "react"
-import { Map, Marker, Polygon } from 'google-maps-react';
+import React from "react";
+import { Map, Marker, Polygon } from "google-maps-react";
 
-class PlottedMap extends Component {
-    constructor(props) {
-        super();
-        this.markers = []
-        this.shouldCreateMarkers = true;
-    }
+import { connect } from "react-redux";
 
-    createMarkers() {
-        if(this.props.dataPointsToPlot !== undefined && this.props.dataPointsToPlot !== []){
-            for(var dataPoint of this.props.dataPointsToPlot){
-                this.markers.push(this.createMarker(dataPoint));
-            };
-            if(this.markers.length > 0){
-
-            }
-        }
-        
-    }
-
-    createMarker(point) {
-        const actualPoint = point[1];
-        let url = "/images/low.png";
-        if(actualPoint.locId === "PCCB_WQX-977082"){
-            url = "/images/med.png";
-        }
-        return <Marker
-            key={actualPoint.locId}
-            position={{ lat: actualPoint.lat, lng: actualPoint.long }}
-            icon={{
-                url: url,
-                anchor: new window.google.maps.Point(24, 24),
-                scaledSize: new window.google.maps.Size(48, 48)
-            }}
-        />
-    }
-
-    renderMarkers() {
-        if(this.shouldCreateMarkers){
-            this.createMarkers();
-        }
-
-        if(this.markers.length > 0 ){
-            console.log("render Markers: ", this.markers);
-            return this.markers
-        }
-    }
-
-    render() {
-        return (
-            <Map
-                google={this.props.google}
-                zoom={13}
-                initialCenter={{ lat: 41.583586, lng: -93.628419 }}>
-
-                <Polygon
-                    paths={this.props.coordinatesList}
-                    strokeColor="#0000FF"
-                    strokeOpacity={0.8}
-                    strokeWeight={2}
-                    fillColor="#0000FF"
-                    fillOpacity={0.35} />
-
-                {this.renderMarkers()}
-
-            </Map>
-        )
-    }
+function mapStateToProps(state) {
+    return {
+        dataPointsToPlot: state.dataPoints.nitratePoints,
+        coordinatesList: state.huc.coords
+    };
 }
 
-export default PlottedMap;
+const PlottedMap = props => {
+    let markers = [];
+    let shouldCreateMarkers = true;
+    function createMarkers() {
+        if (
+            props.dataPointsToPlot !== undefined &&
+            props.dataPointsToPlot !== []
+        ) {
+            for (var dataPoint of props.dataPointsToPlot) {
+                markers.push(createMarker(dataPoint));
+            }
+            if (markers.length > 0) {
+            }
+        }
+    }
+
+    function createMarker(point) {
+        let url = "/images/low.png";
+        return (
+            <Marker
+                key={point.locId}
+                position={{ lat: point.lat, lng: point.long }}
+                icon={{
+                    url: url,
+                    anchor: new window.google.maps.Point(24, 24),
+                    scaledSize: new window.google.maps.Size(48, 48)
+                }}
+            />
+        );
+    }
+
+    function renderMarkers() {
+        if (shouldCreateMarkers) {
+            createMarkers();
+        }
+
+        if (markers.length > 0) {
+            return markers;
+        }
+    }
+
+    return (
+        <Map
+            google={props.google}
+            zoom={13}
+            initialCenter={{ lat: 41.583586, lng: -93.628419 }}
+        >
+            <Polygon
+                paths={props.coordinatesList}
+                strokeColor="#0000FF"
+                strokeOpacity={0.8}
+                strokeWeight={2}
+                fillColor="#0000FF"
+                fillOpacity={0.35}
+            />
+
+            {renderMarkers()}
+        </Map>
+    );
+};
+
+export default connect(mapStateToProps)(PlottedMap);

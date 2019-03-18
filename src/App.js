@@ -10,9 +10,6 @@ import AddressModal from "./ui-core/modals/address";
 import { HEADER_TITLE } from "./ui-core/constants/header";
 import { DRINKING_LAYER } from "./constants_shared/layers";
 import LayerSelection from "./ui-core/components/layer-selection";
-import getHucBorder from "./server-core/border-data-api";
-import getHucFromAddress from "./server-core/location-service";
-import API from "./server-core/api-client";
 import AppTheme from "./theme";
 
 import { MuiThemeProvider } from "@material-ui/core/styles";

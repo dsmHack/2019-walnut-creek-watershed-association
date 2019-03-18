@@ -1,18 +1,27 @@
 import getHucFromAddress from "../../server-core/location-service";
 import getHucBorder from "../../server-core/border-data-api";
 import API from "../../server-core/api-client";
+import { actions as dataPointsActions } from "./data-points";
 
 const GET_HUC = "GET_HUC";
 const GET_HUC_BORDER = "GET_HUC_BORDER";
 const CONVERT_HUC = "CONVERT_HUC";
 
+const initialState = {
+    hucId: '',
+    border: {},
+    latLongs: [],
+    coords: []
+}
+
 export const actions = {
     getHuc(address) {
         return dispatch => {
             getHucFromAddress(address)
-                .then(huc => {
-                    dispatch({ type: GET_HUC, payload: huc });
-                    this.getHucBorder(huc);
+                .then(hucId => {
+                    dispatch({ type: GET_HUC, payload: hucId });
+                    this.getHucBorder(hucId);
+                    dataPointsActions.getNitratePoints(hucId, dispatch);
                 })
                 .catch(error => {
                     logErrorShowModal(dispatch, error);
@@ -38,7 +47,11 @@ export const actions = {
             API.convertEsriGeometryPolygonToLatLngList(border)
                 .then(result => {
                     var latLongs = result.data;
-                    dispatch({ type: CONVERT_HUC, payload: latLongs });
+                    var coords = convertLatLongToCoords(latLongs);
+                    dispatch({
+                        type: CONVERT_HUC,
+                        payload: { latLongs, coords }
+                    });
                 })
                 .catch(error => {
                     logErrorShowModal(dispatch, error);
@@ -47,12 +60,12 @@ export const actions = {
     }
 };
 
-export function reducer(state = {}, { type, payload }) {
+export function reducer(state = initialState, { type, payload }) {
     switch (type) {
         case GET_HUC: {
             return {
                 ...state,
-                huc: payload
+                hucId: payload
             };
         }
         case GET_HUC_BORDER: {
@@ -64,7 +77,8 @@ export function reducer(state = {}, { type, payload }) {
         case CONVERT_HUC: {
             return {
                 ...state,
-                latLongs: payload
+                latLongs: payload.latLongs,
+                coords: payload.coords
             };
         }
         default:
@@ -75,4 +89,15 @@ export function reducer(state = {}, { type, payload }) {
 function logErrorShowModal(dispatch, error) {
     console.log("Get Huc Info Error: ", error);
     dispatch({ type: "SHOW_MODAL" });
+}
+
+export function convertLatLongToCoords(latLongs) {
+    let coords = [];
+    for (var i = 0; i < latLongs.length; i++) {
+        coords.push({
+            lat: Number(latLongs[i].y),
+            lng: Number(latLongs[i].x)
+        });
+    }
+    return coords;
 }
