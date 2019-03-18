@@ -21,7 +21,6 @@ class PlottedMap extends Component {
     }
 
     createMarker(point) {
-        console.log("Point", point);
         const actualPoint = point[1];
         let url = "/images/low.png";
         if(actualPoint.locId === "PCCB_WQX-977082"){

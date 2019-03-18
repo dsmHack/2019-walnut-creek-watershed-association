@@ -5,10 +5,14 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import TextField from "@material-ui/core/TextField";
-import { ADDRESS_MODAL_TITLE, ADDRESS_MODAL_INPUT_PLACEHOLDER } from "../constants/address";
+import {
+    ADDRESS_MODAL_TITLE,
+    ADDRESS_MODAL_INPUT_PLACEHOLDER
+} from "../constants/address";
 import "./address.css";
 
 import { actions } from "../dux/address";
+import { actions as hucActions } from "../dux/huc";
 import { connect } from "react-redux";
 
 function mapStateToProps(state) {
@@ -17,6 +21,11 @@ function mapStateToProps(state) {
         showAddressModal: state.address.showAddressModal
     };
 }
+
+const mapDispatchToProps = {
+    ...actions,
+    ...hucActions
+};
 
 const AddressModal = props => {
     return (
@@ -45,7 +54,8 @@ const AddressModal = props => {
         </Card>
     );
 
-    function handleSubmit(){
+    function handleSubmit() {
+        props.getHuc(props.address);
         props.hideModal();
     }
 
@@ -54,11 +64,13 @@ const AddressModal = props => {
     }
 
     function displayModal() {
-        return props.showAddressModal ? { display: "block" } : { display: "none" };
+        return props.showAddressModal
+            ? { display: "block" }
+            : { display: "none" };
     }
 };
 
 export default connect(
     mapStateToProps,
-    actions
+    mapDispatchToProps
 )(AddressModal);

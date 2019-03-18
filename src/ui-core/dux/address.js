@@ -5,19 +5,19 @@ const HIDE_MODAL = "HIDE_MODAL";
 const initialState = {
     address: "",
     showAddressModal: true
-}
+};
 
 export const actions = {
     addAddress(address) {
-        return { type: ADD_ADDRESS, payload: address }
+        return { type: ADD_ADDRESS, payload: address };
     },
-    showModal(){
-        return {type: SHOW_MODAL}
+    showModal() {
+        return { type: SHOW_MODAL };
     },
-    hideModal(){
-        return {type: HIDE_MODAL}
+    hideModal() {
+        return { type: HIDE_MODAL };
     }
-}
+};
 
 export function reducer(state = initialState, { type, payload }) {
     switch (type) {
@@ -25,19 +25,19 @@ export function reducer(state = initialState, { type, payload }) {
             return {
                 ...state,
                 address: payload
-            }
+            };
         }
         case SHOW_MODAL: {
             return {
                 ...state,
                 showAddressModal: true
-            }
+            };
         }
         case HIDE_MODAL: {
             return {
                 ...state,
                 showAddressModal: false
-            }
+            };
         }
         default:
             return state;
