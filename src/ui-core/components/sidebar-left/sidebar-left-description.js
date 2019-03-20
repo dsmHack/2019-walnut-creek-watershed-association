@@ -44,14 +44,6 @@ const SidebarLeftDescription = props => {
                         {descriptions.section2.description}
                     </Typography>
                 </div>
-                <div className="section">
-                    <Typography className="title" variant="h6">
-                        {descriptions.section3.title}
-                    </Typography>
-                    <Typography className="description">
-                        {descriptions.section3.description}
-                    </Typography>
-                </div>
             </CardContent>
         </Card>
     );
