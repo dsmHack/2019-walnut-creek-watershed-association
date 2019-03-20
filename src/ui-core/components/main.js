@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 
 import Header from "./header";
 import PlottedMap from "./map";
-import SidebarRight from "./sidebar-right";
-import SidebarLeft from "./sidebar-left";
+import SidebarRight from "./sidebar-right/sidebar-right";
+import SidebarLeft from "./sidebar-left/sidebar-left";
 import AddressModal from "../modals/address";
 import LayerSelection from "./layer-selection";
 import { HEADER_TITLE } from "../constants/header";
