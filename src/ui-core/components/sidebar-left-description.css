@@ -1,0 +1,12 @@
+.title {
+    font-weight: bold;
+    flex: 1;
+}
+
+.description {
+    flex: 1
+}
+
+.section {
+    display: flex;
+}

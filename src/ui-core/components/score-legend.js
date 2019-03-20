@@ -1,12 +1,12 @@
 import React from "react";
-import PropTypes from "prop-types";
+import {connect} from 'react-redux';
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import LegendRow from "./legend-row";
 import {
     SWIMMING_LAYER,
-    FISH_LAYER,
-    DRINKING_LAYER
+    FISH_LAYER
 } from "../../constants_shared/layers";
 import {
     SWIM_LEGEND_HIGH,
@@ -25,11 +25,17 @@ import {
     DRINKING_LEGEND_EXTREME,
     DRINKING_LEGEND_EXTREME_SCORE
 } from "../constants/legend";
+
 import "./header.css";
 
+function mapStateToProps(state) {
+    return {
+        selectedLayer: state.layer.selectedLayer
+    }
+}
+
 const ScoreLegend = props => {
-    const { layer } = props;
-    const ranks = SetLegend(layer);
+    const ranks = SetLegend(props.selectedLayer);
     return (
         <Card className="legend">
             <CardHeader className="title" title={ranks.Title} />
@@ -37,14 +43,17 @@ const ScoreLegend = props => {
                 <LegendRow
                     ranking={ranks.High.Ranking}
                     score={ranks.High.Score}
+                    icon={ranks.High.icon}
                 />
                 <LegendRow
                     ranking={ranks.Med.Ranking}
                     score={ranks.Med.Score}
+                    icon={ranks.Med.icon}
                 />
                 <LegendRow
                     ranking={ranks.Low.Ranking}
                     score={ranks.Low.Score}
+                    icon={ranks.Low.icon}
                 />
             </CardContent>
         </Card>
@@ -58,15 +67,18 @@ const SetLegend = layer => {
                 Title: SWIM_LEGEND_TITLE,
                 High: {
                     Ranking: SWIM_LEGEND_HIGH,
-                    Score: SWIM_LEGEND_HIGH_SCORE
+                    Score: SWIM_LEGEND_HIGH_SCORE,
+                    icon: "/images/high.png"
                 },
                 Med: {
                     Ranking: SWIM_LEGEND_MEDIUM,
-                    Score: SWIM_LEGEND_MEDIUM_SCORE
+                    Score: SWIM_LEGEND_MEDIUM_SCORE,
+                    icon: "/images/med.png"
                 },
                 Low: {
                     Ranking: SWIM_LEGEND_LOW,
-                    Score: SWIM_LEGEND_LOW_SCORE
+                    Score: SWIM_LEGEND_LOW_SCORE,
+                    icon: "/images/low.png"
                 }
             };
         case FISH_LAYER:
@@ -74,38 +86,41 @@ const SetLegend = layer => {
                 Title: FISH_LEGEND_TITLE,
                 High: {
                     Ranking: SWIM_LEGEND_HIGH,
-                    Score: SWIM_LEGEND_HIGH_SCORE
+                    Score: SWIM_LEGEND_HIGH_SCORE,
+                    icon: "/images/high.png"
                 },
                 Med: {
                     Ranking: SWIM_LEGEND_MEDIUM,
-                    Score: SWIM_LEGEND_MEDIUM_SCORE
+                    Score: SWIM_LEGEND_MEDIUM_SCORE,
+                    icon: "/images/med.png"
                 },
                 Low: {
                     Ranking: SWIM_LEGEND_LOW,
-                    Score: SWIM_LEGEND_LOW_SCORE
+                    Score: SWIM_LEGEND_LOW_SCORE,
+                    icon: "/images/low.png"
                 }
             };
-        case DRINKING_LAYER:
+        default: {
             return {
                 Title: DRINKING_LEGEND_TITLE,
                 High: {
                     Ranking: DRINKING_LEGEND_SAFE,
-                    Score: DRINKING_LEGEND_SAFE_SCORE
+                    Score: DRINKING_LEGEND_SAFE_SCORE,
+                    icon: "/images/high.png"
                 },
                 Med: {
                     Ranking: DRINKING_LEGEND_POLLUTED,
-                    Score: DRINKING_LEGEND_POLLUTED_SCORE
+                    Score: DRINKING_LEGEND_POLLUTED_SCORE,
+                    icon: "/images/med.png"
                 },
                 Low: {
                     Ranking: DRINKING_LEGEND_EXTREME,
-                    Score: DRINKING_LEGEND_EXTREME_SCORE
+                    Score: DRINKING_LEGEND_EXTREME_SCORE,
+                    icon: "/images/low.png"
                 }
             };
+        }
     }
 };
 
-ScoreLegend.propTypes = {
-    title: PropTypes.string.isRequired
-};
-
-export default ScoreLegend;
+export default connect(mapStateToProps)(ScoreLegend);

@@ -81,7 +81,7 @@ async function convertEsriGeometryPolygonToLatLngList(promise) {
 function getLocationDataFromXml(xml) {
     let parsedResult = new DOMParser().parseFromString(xml, "text/xml");
     let locations = parsedResult.getElementsByTagName("MonitoringLocation");
-    let samples = new Map();
+    let samples = [];
     for (let location of locations) {
 	    let sample = new Point()
         const getTagValue = (qualifiedName) => {
@@ -96,7 +96,7 @@ function getLocationDataFromXml(xml) {
 
         let existing = samples[sample.locId];
         if (existing == null || (Date.parse(sample.date) > Date.parse(existing.date))) {
-            samples.set(sample.locId, sample);
+            samples.push(sample);
         }
     }
 
@@ -167,7 +167,7 @@ async function fetchFibiDataBySiteId(siteId) {
 }
 
 async function getEpaStations(huc, characteristicName) {
-    let query = EPA_URL + `startDateLo=${dateTwoMonthsAgo()}&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
+    let query = EPA_URL + `startDate=${dateTwoMonthsAgo()}&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
     return axios
         .get(query)
         .then(function(response) {
@@ -181,16 +181,17 @@ async function getEpaStations(huc, characteristicName) {
 }
 
 async function getSampleResults(huc, characteristicName) {
-    var url = SAMPLE_RESULTS_URL + `startDateLo=${dateTwoMonthsAgo()}&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
+    var url = SAMPLE_RESULTS_URL + `startDate=${dateTwoMonthsAgo()}&huc=${huc}&mimeType=xml&characteristicName=${characteristicName}`;
+
     return axios.get(url).then().catch(error => {
         console.log(error);
     });
 }
 
 function dateTwoMonthsAgo() {
-    let startDateLo = new Date();
-    startDateLo.setMonth(startDateLo.getMonth() - 2);
-    return startDateLo.toLocaleDateString().replace(/\//g, '-')
+    let startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - 2);
+    return startDate.toLocaleDateString().replace(/\//g, '-')
 }
 
 async function getHuc(lat, long) {}
