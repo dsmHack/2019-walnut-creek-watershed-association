@@ -3,6 +3,8 @@ import { Map, Marker, Polygon } from "google-maps-react";
 
 import { connect } from "react-redux";
 
+import "./map.css";
+
 function mapStateToProps(state) {
     return {
         dataPointsToPlot: state.dataPoints.nitratePoints,
@@ -53,6 +55,8 @@ const PlottedMap = props => {
 
     return (
         <Map
+            className="map"
+            disableDefaultUI={true}
             google={props.google}
             zoom={13}
             initialCenter={{ lat: 41.583586, lng: -93.628419 }}

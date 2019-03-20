@@ -1,10 +1,12 @@
 const ADD_ADDRESS = "ADD_ADDRESS";
 const SHOW_MODAL = "SHOW_MODAL";
 const HIDE_MODAL = "HIDE_MODAL";
+const DISPLAY_UI = "DISPLAY_UI";
 
 const initialState = {
     address: "",
-    showAddressModal: true
+    showAddressModal: true,
+    displayUi: false
 };
 
 export const actions = {
@@ -16,6 +18,9 @@ export const actions = {
     },
     hideModal() {
         return { type: HIDE_MODAL };
+    },
+    displayUi() {
+        return { type: DISPLAY_UI };
     }
 };
 
@@ -37,6 +42,12 @@ export function reducer(state = initialState, { type, payload }) {
             return {
                 ...state,
                 showAddressModal: false
+            };
+        }
+        case DISPLAY_UI: {
+            return {
+                ...state,
+                displayUi: true
             };
         }
         default:

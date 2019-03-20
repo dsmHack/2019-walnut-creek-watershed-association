@@ -5,7 +5,7 @@ describe("Address Redux", () => {
     let store;
     let initialState;
     beforeEach(() => {
-        initialState = { address: "", showAddressModal: true };
+        initialState = { address: "", showAddressModal: true, displayUi: false };
         store = mockStore(initialState);
         testAddress = chance.word();
     });

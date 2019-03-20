@@ -1,3 +1,3 @@
-export const FISH_LAYER = "fish";
-export const SWIMMING_LAYER = "swimming";
-export const DRINKING_LAYER = "drinking";
+export const FISH_LAYER = "FISH_LAYER";
+export const SWIMMING_LAYER = "SWIMMING_LAYER";
+export const DRINKING_LAYER = "DRINKING_LAYER";

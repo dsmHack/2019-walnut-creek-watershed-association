@@ -9,7 +9,7 @@ const CONVERT_HUC = "CONVERT_HUC";
 
 const initialState = {
     hucId: '',
-    border: {},
+    hucBorder: {},
     latLongs: [],
     coords: []
 }

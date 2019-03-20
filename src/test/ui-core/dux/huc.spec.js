@@ -20,7 +20,7 @@ describe("Huc Redux", () => {
     beforeEach(() => {
         initialState = {
             hucId: "",
-            border: {},
+            hucBorder: {},
             latLongs: [],
             coords: []
         };

@@ -1,0 +1,13 @@
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.text {
+    padding-top: 10px;
+}
+
+.icon {
+    width: 15%;
+    height: 15%;
+}
