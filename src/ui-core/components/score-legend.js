@@ -106,7 +106,7 @@ const SetLegend = layer => {
                 High: {
                     Ranking: DRINKING_LEGEND_SAFE,
                     Score: DRINKING_LEGEND_SAFE_SCORE,
-                    icon: "/images/high.png"
+                    icon: "/images/low.png"
                 },
                 Med: {
                     Ranking: DRINKING_LEGEND_POLLUTED,
@@ -116,7 +116,7 @@ const SetLegend = layer => {
                 Low: {
                     Ranking: DRINKING_LEGEND_EXTREME,
                     Score: DRINKING_LEGEND_EXTREME_SCORE,
-                    icon: "/images/low.png"
+                    icon: "/images/high.png"
                 }
             };
         }
