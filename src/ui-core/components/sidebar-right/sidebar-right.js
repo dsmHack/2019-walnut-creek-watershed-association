@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import ScoreLegend from "./score-legend";
+import ScoreLegend from "../legend/score-legend";
 import SidebarRightDescription from "./sidebar-right-description";
 import Button from "@material-ui/core/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

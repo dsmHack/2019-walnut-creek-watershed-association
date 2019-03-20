@@ -7,7 +7,7 @@ import LegendRow from "./legend-row";
 import {
     SWIMMING_LAYER,
     FISH_LAYER
-} from "../../constants_shared/layers";
+} from "../../../constants_shared/layers";
 import {
     SWIM_LEGEND_HIGH,
     SWIM_LEGEND_HIGH_SCORE,
@@ -24,9 +24,7 @@ import {
     DRINKING_LEGEND_POLLUTED_SCORE,
     DRINKING_LEGEND_EXTREME,
     DRINKING_LEGEND_EXTREME_SCORE
-} from "../constants/legend";
-
-import "./header.css";
+} from "../../constants/legend";
 
 function mapStateToProps(state) {
     return {

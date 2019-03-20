@@ -7,7 +7,7 @@ import {
     SWIMMING_LAYER,
     FISH_LAYER,
     DRINKING_LAYER
-} from "../../constants_shared/layers";
+} from "../../../constants_shared/layers";
 
 function mapStateToProps(state) {
     return {

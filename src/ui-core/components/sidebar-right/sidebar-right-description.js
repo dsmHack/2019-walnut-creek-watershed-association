@@ -8,12 +8,12 @@ import {
     SWIMMING_LAYER,
     FISH_LAYER,
     DRINKING_LAYER
-} from "../../constants_shared/layers";
+} from "../../../constants_shared/layers";
 import {
     FibiSection,
     NitrateSection,
     EcoliSection
-} from "../constants/sidebar-right";
+} from "../../constants/sidebar-right";
 import "./sidebar-right-description.css";
 
 function mapStateToProps(state) {
