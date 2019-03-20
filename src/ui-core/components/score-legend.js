@@ -87,7 +87,7 @@ const SetLegend = layer => {
                 High: {
                     Ranking: SWIM_LEGEND_HIGH,
                     Score: SWIM_LEGEND_HIGH_SCORE,
-                    icon: "/images/high.png"
+                    icon: "/images/low.png"
                 },
                 Med: {
                     Ranking: SWIM_LEGEND_MEDIUM,
@@ -97,7 +97,7 @@ const SetLegend = layer => {
                 Low: {
                     Ranking: SWIM_LEGEND_LOW,
                     Score: SWIM_LEGEND_LOW_SCORE,
-                    icon: "/images/low.png"
+                    icon: "/images/high.png"
                 }
             };
         default: {
