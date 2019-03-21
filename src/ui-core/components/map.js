@@ -1,5 +1,6 @@
 import React from "react";
 import { Map, Marker, Polygon } from "google-maps-react";
+import {SWIMMING_LAYER, DRINKING_LAYER, FISH_LAYER} from "../../constants_shared/layers";
 
 import { connect } from "react-redux";
 
@@ -7,20 +8,45 @@ import "./map.css";
 
 function mapStateToProps(state) {
     return {
-        dataPointsToPlot: state.dataPoints.nitratePoints,
-        coordinatesList: state.huc.coords
+        nitratePoints: state.dataPoints.nitratePoints,
+        ecoliPoints: state.dataPoints.ecoliPoints,
+        fibiPoints: state.dataPoints.fibiPoints,
+        coordinatesList: state.huc.coords,
+        selectedLayer: state.layer.selectedLayer
     };
 }
 
 const PlottedMap = props => {
     let markers = [];
     let shouldCreateMarkers = true;
+
+    let dataPoints = [];
+
+    function setDataPoints() {
+        switch(props.selectedLayer){
+            case SWIMMING_LAYER: {
+                return props.ecoliPoints;
+            }
+            case DRINKING_LAYER: {
+                return props.nitratePoints;
+            }
+            case FISH_LAYER: {
+                return props.fibiPoints;
+            }
+            default: {
+                return [];
+            }
+        }
+    }
+
     function createMarkers() {
+        dataPoints = setDataPoints();
         if (
-            props.dataPointsToPlot !== undefined &&
-            props.dataPointsToPlot !== []
+            dataPoints !== undefined &&
+            dataPoints !== []
         ) {
-            for (var dataPoint of props.dataPointsToPlot) {
+            markers = [];
+            for (var dataPoint of dataPoints) {
                 markers.push(createMarker(dataPoint));
             }
             if (markers.length > 0) {
