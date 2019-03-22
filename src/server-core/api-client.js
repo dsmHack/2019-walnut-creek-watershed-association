@@ -21,25 +21,23 @@ async function getNitrateData(huc) {
 
 async function baseEpaQuery(huc, charName) {
     let sampleResult = await getSampleResults(huc, charName);
-    let dataSamples = getValueDataFromXml(sampleResult.data)
+    let dataSamples = getValueDataFromXml(sampleResult.data);
 
     let locationResult = await getEpaStations(huc, charName);
     let pointSamples = getLocationDataFromXml(locationResult.data)
-
-    for (let key of pointSamples.keys()) {
-        let data = dataSamples.get(key);
+    for (let point of pointSamples) {
+        let data = dataSamples.filter(d => d.locId === point.locId);
         if (data !== undefined) {
-            pointSamples.get(key).datas.push(data);
+            point.datas = data;
         }
     }
-
     return pointSamples;
 }
 
 function getValueDataFromXml(xml) {
     let parsedResult = new DOMParser().parseFromString(xml, "text/xml");
     let activities = parsedResult.getElementsByTagName("Activity");
-    let samples = new Map();
+    let samples = [];
     for (let activity of activities) {
 	    let sample = new Data();
         const getTagValue = (qualifiedName) => {
@@ -55,7 +53,7 @@ function getValueDataFromXml(xml) {
 
         let existing = samples[sample.locId];
         if (existing == null || (Date.parse(sample.date) > Date.parse(existing.date))) {
-            samples.set(sample.locId, sample);
+            samples.push(sample);
         }
     }
 

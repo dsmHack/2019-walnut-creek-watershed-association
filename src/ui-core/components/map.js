@@ -1,8 +1,12 @@
 import React from "react";
-import { Map, Marker, Polygon } from "google-maps-react";
-import {SWIMMING_LAYER, DRINKING_LAYER, FISH_LAYER} from "../../constants_shared/layers";
-
 import { connect } from "react-redux";
+import { Map, Marker, Polygon } from "google-maps-react";
+import {
+    SWIMMING_LAYER,
+    DRINKING_LAYER,
+    FISH_LAYER
+} from "../../constants_shared/layers";
+import determineMarkerIcon from "./marker-score";
 
 import "./map.css";
 
@@ -23,7 +27,7 @@ const PlottedMap = props => {
     let dataPoints = [];
 
     function setDataPoints() {
-        switch(props.selectedLayer){
+        switch (props.selectedLayer) {
             case SWIMMING_LAYER: {
                 return props.ecoliPoints;
             }
@@ -41,10 +45,7 @@ const PlottedMap = props => {
 
     function createMarkers() {
         dataPoints = setDataPoints();
-        if (
-            dataPoints !== undefined &&
-            dataPoints !== []
-        ) {
+        if (dataPoints !== undefined && dataPoints !== []) {
             markers = [];
             for (var dataPoint of dataPoints) {
                 markers.push(createMarker(dataPoint));
@@ -55,7 +56,8 @@ const PlottedMap = props => {
     }
 
     function createMarker(point) {
-        let url = "/images/low.png";
+        const recentScore = determineMostRecentDate(point.datas);
+        let url = determineMarkerIcon(recentScore.value, props.selectedLayer);
         return (
             <Marker
                 key={point.locId}
@@ -77,6 +79,16 @@ const PlottedMap = props => {
         if (markers.length > 0) {
             return markers;
         }
+    }
+
+    function determineMostRecentDate(datas) {
+        let newest = {date : ""};
+        for(let data of datas) {
+            if(data.date > newest.date) {
+                newest = data;
+            }
+        }
+        return newest;
     }
 
     return (

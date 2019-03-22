@@ -6,19 +6,14 @@ describe("Plotted Map", () => {
     let wrapper;
 
     beforeEach(() => {
-        wrapper = shallow(<PlottedMap />);
+        wrapper = shallow(<PlottedMap.WrappedComponent />);
     });
-    
-    it("should render", () => {
-        shallow(<PlottedMap />);
-    })
 
     it("should contain a map", () => {
-        console.log('wrapper', wrapper.debug());
-        //There is an issue with mocking connected components in new
-        //React redux versions (Connected, withStyles, etc);
-        //These tests will need to be written when that is fixed
-        //or by downgrading to a previous version
-        //Reserach React Context API & Enzyme Context Testing
-    })
-}) 
+        expect(wrapper.find("Map").length).toBe(1);
+    });
+
+    it("should contain a polygon to draw the huc", () => {
+        expect(wrapper.find("Polygon").length).toBe(1);
+    });
+});
