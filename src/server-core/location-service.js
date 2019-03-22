@@ -1,6 +1,30 @@
 import axios from "axios";
 import { HUC_FROM_ADDRESS_URL, WATERSHED_DATA_URL, ERROR_ADDRESS_NOT_FOUND, ERROR_WATERSHED_NOT_FOUND } from "./constants/urls";
 
+async function getGeoAddress(address) {
+    var url = HUC_FROM_ADDRESS_URL;
+    return axios
+        .get(url, {
+            params: {
+                outFields: "Loc_name,City,Place_addr,Region,RegionAbbr,Country",
+                outSR: { latestWkid: 4326, wkid: 102100 },
+                f: "json",
+                SingleLine: address
+            }
+        })
+        .then(response => {
+            if (typeof response.data.candidates[0] === "undefined") {
+                return Promise.reject(ERROR_ADDRESS_NOT_FOUND);
+            }
+            var firstCandidate = response.data.candidates[0];
+            return {
+                spatialReference: response.data.spatialReference,
+                x: firstCandidate.location.x,
+                y: firstCandidate.location.y
+            };
+        });
+}
+
 async function getHucFromAddress(address) {
     var url = HUC_FROM_ADDRESS_URL;
     return axios
@@ -52,4 +76,4 @@ async function getWatershedData(location) {
         });
 }
 
-export default getHucFromAddress;
+export default {getHucFromAddress, getGeoAddress};

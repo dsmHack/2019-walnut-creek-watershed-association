@@ -16,7 +16,8 @@ function mapStateToProps(state) {
         ecoliPoints: state.dataPoints.ecoliPoints,
         fibiPoints: state.dataPoints.fibiPoints,
         coordinatesList: state.huc.coords,
-        selectedLayer: state.layer.selectedLayer
+        selectedLayer: state.layer.selectedLayer,
+        mapAddress: state.address.mapAddress
     };
 }
 
@@ -91,11 +92,18 @@ const PlottedMap = props => {
         return newest;
     }
 
+    function setCenter(){
+        if(props.mapAddress !== undefined && props.mapAddress !== {}){
+            return {lat: props.mapAddress.x, lng: props.mapAddress.y}
+        }
+    }
+
     return (
         <Map
             className="map"
             disableDefaultUI={true}
             google={props.google}
+            center={setCenter()}
             zoom={13}
             initialCenter={{ lat: 41.583586, lng: -93.628419 }}
         >

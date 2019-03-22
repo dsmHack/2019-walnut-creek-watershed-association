@@ -56,6 +56,7 @@ const AddressModal = props => {
 
     function handleSubmit() {
         props.getHuc(props.address);
+        props.setMapAddress(props.address);
         props.hideModal();
         props.displayUi();
     }

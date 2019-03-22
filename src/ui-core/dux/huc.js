@@ -1,4 +1,4 @@
-import getHucFromAddress from "../../server-core/location-service";
+import locationService from "../../server-core/location-service";
 import getHucBorder from "../../server-core/border-data-api";
 import API from "../../server-core/api-client";
 import { actions as dataPointsActions } from "./data-points";
@@ -17,7 +17,7 @@ const initialState = {
 export const actions = {
     getHuc(address) {
         return dispatch => {
-            getHucFromAddress(address)
+            locationService.getHucFromAddress(address)
                 .then(hucId => {
                     dispatch({ type: GET_HUC, payload: hucId });
                     this.getHucBorder(hucId);
