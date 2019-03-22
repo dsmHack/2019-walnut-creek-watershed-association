@@ -54,8 +54,9 @@ describe("Huc Redux", () => {
         });
 
         it("should call the api client with the border to get latLongs", () => {
+            const response = { data: latLongs };
             API.convertEsriGeometryPolygonToLatLngList.mockResolvedValue(
-                latLongs
+                response
             );
             store.dispatch(huc.actions.convertHucToLatLong(border));
             let providedHucBorder =
@@ -67,7 +68,7 @@ describe("Huc Redux", () => {
             var resultPromise =
                 API.convertEsriGeometryPolygonToLatLngList.mock.results[0]
                     .value;
-            resultPromise.then(result => expect(result).toBe(latLongs));
+            resultPromise.then(result => expect(result).toBe(response));
         });
 
         it("should kick off data point process", () => {
