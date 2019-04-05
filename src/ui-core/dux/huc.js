@@ -3,70 +3,64 @@ import getHucBorder from "../../server-core/border-data-api";
 import API from "../../server-core/api-client";
 import { actions as dataPointsActions } from "./data-points";
 import {get} from 'lodash';
+import {actions as appStateActions} from './appState';
 
-const GET_HUC = "GET_HUC";
-const GET_HUC_BORDER = "GET_HUC_BORDER";
-const CONVERT_HUC = "CONVERT_HUC";
+const FETCHING_HUC = "FETCHING_HUC";
+const GET_HUC = "HUC_RECEIVED";
+const GET_HUC_BORDER = "HUC_BORDER_RECEIVED";
+const CONVERT_HUC = "HUC_CONVERTED";
+const HUC_LOADED = "HUC_LOADED";
 
 const initialState = {
     hucId: '',
     hucBorder: {},
     latLongs: [],
-    coords: []
+    coords: [],
+    isLoading: false
 };
 
 export const selectors = {
-    getHucName: state => get(state, 'huc.hucBorder.data.results[0].attributes.HU_10_NAME')
+    getHucName: state => get(state, 'huc.hucBorder.data.results[0].attributes.HU_10_NAME'),
+    isLoading: state => get(state, 'huc.isLoading', false)
 };
 
-export const actions = {
-    getHuc(address) {
-        return dispatch => {
-            getHucFromAddress(address)
-                .then(hucId => {
-                    dispatch({ type: GET_HUC, payload: hucId });
-                    this.getHucBorder(hucId);
-                    dataPointsActions.getNitratePoints(hucId, dispatch);
-                })
-                .catch(error => {
-                    logErrorShowModal(dispatch, error);
-                });
-        };
-    },
+function fetchHucs(address) {
+    return async dispatch => {
+        try {
+            dispatch(appStateActions.isLoading());
+            dispatch({type: FETCHING_HUC});
+            const hucId = await getHucFromAddress(address);
+            dispatch({type: GET_HUC, payload: hucId});
+            dispatch(dataPointsActions.fetchDataPoints(hucId));
 
-    getHucBorder(hucId) {
-        return dispatch => {
-            getHucBorder(hucId, "huc_12")
-                .then(border => {
-                    dispatch({ type: GET_HUC_BORDER, payload: border });
-                    this.convertHucToLatLong(border);
-                })
-                .catch(error => {
-                    logErrorShowModal(dispatch, error);
-                });
-        };
-    },
+            const border = await getHucBorder(hucId, "huc_12");
+            dispatch({type: GET_HUC_BORDER, payload: border});
 
-    convertHucToLatLong(border) {
-        return dispatch => {
-            API.convertEsriGeometryPolygonToLatLngList(border)
-                .then(result => {
-                    var latLongs = result.data;
-                    var coords = convertLatLongToCoords(latLongs);
-                    dispatch({
-                        type: CONVERT_HUC,
-                        payload: { latLongs, coords }
-                    });
-                })
-                .catch(error => {
-                    logErrorShowModal(dispatch, error);
-                });
-        };
+            const result = await API.convertEsriGeometryPolygonToLatLngList(border);
+            const latLongs = result.data;
+            const coords = convertLatLongToCoords(latLongs);
+            dispatch({type: CONVERT_HUC, payload: {latLongs, coords}});
+
+            dispatch({type: HUC_LOADED});
+        } catch (e) {
+            console.log("Get Huc Info Error: ", e);
+            dispatch({ type: "SHOW_MODAL" });
+        }
     }
+}
+
+export const actions = {
+    fetchHucs
 };
 
 export function reducer(state = initialState, { type, payload }) {
     switch (type) {
+        case FETCHING_HUC: {
+            return {
+                ...state,
+                isLoading: true
+            }
+        }
         case GET_HUC: {
             return {
                 ...state,
@@ -86,19 +80,20 @@ export function reducer(state = initialState, { type, payload }) {
                 coords: payload.coords
             };
         }
+        case HUC_LOADED: {
+            return {
+                ...state,
+                isLoading: false
+            }
+        }
         default:
             return state;
     }
 }
 
-function logErrorShowModal(dispatch, error) {
-    console.log("Get Huc Info Error: ", error);
-    dispatch({ type: "SHOW_MODAL" });
-}
-
 export function convertLatLongToCoords(latLongs) {
     let coords = [];
-    for (var i = 0; i < latLongs.length; i++) {
+    for (let i = 0; i < latLongs.length; i++) {
         coords.push({
             lat: Number(latLongs[i].y),
             lng: Number(latLongs[i].x)

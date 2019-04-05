@@ -7,6 +7,8 @@ import IconButton from '@material-ui/core/IconButton';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import { withStyles } from '@material-ui/core/styles';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import {connect} from 'react-redux';
 
 const drawerWidth = 240;
 
@@ -72,7 +74,14 @@ function Navbar(props) {
                 {props.title}
             </Typography>
         </Toolbar>
+        {props.isLoading && <LinearProgress/>}
     </AppBar>;
 }
 
-export default withStyles(styles)(Navbar);
+const mapStateToProps = state => ({
+    isLoading: state.appState.isLoading
+});
+
+const StyledComponent = withStyles(styles)(Navbar);
+
+export default connect(mapStateToProps)(StyledComponent);
