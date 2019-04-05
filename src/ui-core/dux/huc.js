@@ -2,6 +2,7 @@ import getHucFromAddress from "../../server-core/location-service";
 import getHucBorder from "../../server-core/border-data-api";
 import API from "../../server-core/api-client";
 import { actions as dataPointsActions } from "./data-points";
+import {get} from 'lodash';
 
 const GET_HUC = "GET_HUC";
 const GET_HUC_BORDER = "GET_HUC_BORDER";
@@ -12,7 +13,11 @@ const initialState = {
     hucBorder: {},
     latLongs: [],
     coords: []
-}
+};
+
+export const selectors = {
+    getHucName: state => get(state, 'huc.hucBorder.data.results[0].attributes.HU_10_NAME')
+};
 
 export const actions = {
     getHuc(address) {

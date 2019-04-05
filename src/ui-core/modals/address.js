@@ -1,12 +1,12 @@
 import React from "react";
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from "@material-ui/core/Button";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
-import TextField from "@material-ui/core/TextField";
 import {
-    ADDRESS_MODAL_TITLE,
     ADDRESS_MODAL_INPUT_PLACEHOLDER
 } from "../constants/address";
 import "./address.css";
@@ -29,29 +29,31 @@ const mapDispatchToProps = {
 
 const AddressModal = props => {
     return (
-        <Card className="modal" style={displayModal()}>
-            <CardHeader className="title" title={ADDRESS_MODAL_TITLE} />
-            <CardContent>
+        <Dialog open={props.showAddressModal} onClose={handleSubmit}>
+            <DialogTitle id="form-dialog-title">Address</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    Please enter the address of where you would like to check the water quality
+                </DialogContentText>
                 <TextField
                     className="address"
                     type="text"
                     onChange={handleOnChange}
                     placeholder={ADDRESS_MODAL_INPUT_PLACEHOLDER}
+                    fullWidth
+                    margin="dense"
                 />
-            </CardContent>
-            <CardActions>
+            </DialogContent>
+            <DialogActions>
                 <Button
-                    className="nextButton"
-                    size="medium"
-                    variant="contained"
                     color="primary"
+                    variant="contained"
                     onClick={handleSubmit}
                 >
-                    NEXT
+                    Search
                 </Button>
-                ;
-            </CardActions>
-        </Card>
+            </DialogActions>
+        </Dialog>
     );
 
     function handleSubmit() {
@@ -62,12 +64,6 @@ const AddressModal = props => {
 
     function handleOnChange(e) {
         props.addAddress(e.target.value);
-    }
-
-    function displayModal() {
-        return props.showAddressModal
-            ? { display: "block" }
-            : { display: "none" };
     }
 };
 

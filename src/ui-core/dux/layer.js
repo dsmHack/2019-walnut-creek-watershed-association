@@ -5,13 +5,17 @@ export const Layers = { fish: FISH_LAYER, drinking: DRINKING_LAYER, swimming: SW
 
 const initialState = {
     selectedLayer: DRINKING_LAYER
+};
+
+export const selectors = {
+    getSelectedLayer: state => state.layer.selectedLayer
 }
 
 export const actions = {
     selectLayer(layer) {
         return { type: layer }
     }
-}
+};
 
 export function reducer(state = initialState, { type, payload }) {
     switch (type) {

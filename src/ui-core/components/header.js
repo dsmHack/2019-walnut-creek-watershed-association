@@ -1,15 +1,31 @@
-import React from "react";
+import React, {useState} from "react";
 import PropTypes from "prop-types";
-import AppBar from "@material-ui/core/AppBar";
-import "./header.css";
+import { withStyles } from '@material-ui/core/styles';
+import AppDrawer from './app-drawer';
+import Navbar from './navbar'
 
-const Header = props => {
-    const { title } = props;
+const styles = {
+    root: {
+        display: 'flex',
+    },
+};
+
+const Header = ({title, classes, children}) => {
+    const [open, setOpen] = useState(false);
+
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+        setOpen(false);
+    };
+
     return (
-        <div className="header">
-            <AppBar position="static">
-                <label>{title}</label>
-            </AppBar>
+        <div className={classes.root}>
+            <Navbar open={open} onClick={handleDrawerOpen} title={title}/>
+            <AppDrawer open={open} handleDrawerClose={handleDrawerClose}/>
+            {children}
         </div>
     );
 };
@@ -18,4 +34,4 @@ Header.propTypes = {
     title: PropTypes.string.isRequired
 };
 
-export default Header;
+export default withStyles(styles)(Header);

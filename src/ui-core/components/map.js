@@ -8,7 +8,7 @@ import {
 } from "../../constants_shared/layers";
 import determineMarkerIcon from "./marker-score";
 
-import "./map.css";
+import "./map.scss";
 
 function mapStateToProps(state) {
     return {
@@ -64,8 +64,8 @@ const PlottedMap = props => {
                 position={{ lat: point.lat, lng: point.long }}
                 icon={{
                     url: url,
-                    anchor: new window.google.maps.Point(24, 24),
-                    scaledSize: new window.google.maps.Size(48, 48)
+                    anchor: new window.google.maps.Point(16, 32),
+                    scaledSize: new window.google.maps.Size(32, 32)
                 }}
             />
         );

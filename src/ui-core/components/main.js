@@ -6,22 +6,23 @@ import PlottedMap from "./map";
 import SidebarRight from "./sidebar-right/sidebar-right";
 import SidebarLeft from "./sidebar-left/sidebar-left";
 import AddressModal from "../modals/address";
-import LayerSelection from "./layer-selection";
 import { HEADER_TITLE } from "../constants/header";
+import {selectors} from '../dux/huc';
 
 function mapStateToProps(state) {
     return {
-        displayUi: state.address.displayUi
+        displayUi: state.address.displayUi,
+        hucName: selectors.getHucName(state)
     };
 }
 
 const Main = props => {
     return (
         <div className="main">
-            <Header title={HEADER_TITLE} />
-            <PlottedMap google={props.google} />
-            {renderUi()}
-            <AddressModal />
+            <Header title={props.hucName || HEADER_TITLE}>
+                <PlottedMap google={props.google} />
+                <AddressModal />
+            </Header>
         </div>
     );
 
@@ -29,7 +30,6 @@ const Main = props => {
         if (props.displayUi) {
             return (
                 <div>
-                    <LayerSelection />
                     <SidebarRight displayDescription={false} />
                     <SidebarLeft displayDescription={false}/>
                 </div>
