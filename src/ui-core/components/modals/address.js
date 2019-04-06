@@ -8,17 +8,16 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from "@material-ui/core/Button";
 import {
     ADDRESS_MODAL_INPUT_PLACEHOLDER
-} from "../constants/address";
+} from "../../constants/address";
 import "./address.css";
 
-import { actions } from "../dux/address";
-import { actions as hucActions } from "../dux/huc";
+import { actions } from "../../dux/appState";
+import { actions as hucActions } from "../../dux/huc";
 import { connect } from "react-redux";
 
 function mapStateToProps(state) {
     return {
-        address: state.address.address,
-        showAddressModal: state.address.showAddressModal
+        showAddressModal: state.appState.showAddressModal
     };
 }
 
@@ -28,8 +27,9 @@ const mapDispatchToProps = {
 };
 
 const AddressModal = props => {
+    const [address, setAddress] = React.useState('');
     return (
-        <Dialog open={props.showAddressModal} onClose={handleSubmit}>
+        <Dialog open={props.showAddressModal} onClose={props.hideModal}>
             <DialogTitle id="form-dialog-title">Address</DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -57,13 +57,13 @@ const AddressModal = props => {
     );
 
     function handleSubmit() {
-        props.fetchHucs(props.address);
+        props.fetchHucs(address);
         props.hideModal();
         props.displayUi();
     }
 
     function handleOnChange(e) {
-        props.addAddress(e.target.value);
+        setAddress(e.target.value);
     }
 };
 
